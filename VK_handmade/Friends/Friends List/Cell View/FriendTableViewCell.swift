@@ -23,8 +23,24 @@ class FriendTableViewCell: UITableViewCell {
         // Configure the view for the selected state
     }
     
-    func configure(name: String, image: UIImage?) {
+    func configure(name: String, image: String) {
         friendName.text = name
-        friendImage.image = image
+        friendImage.loadFrom(URLAddress: image)
+    }
+}
+
+extension UIImageView {
+    func loadFrom(URLAddress: String) {
+        guard let url = URL(string: URLAddress) else {
+            return
+        }
+        
+        DispatchQueue.main.async { [weak self] in
+            if let imageData = try? Data(contentsOf: url) {
+                if let loadedImage = UIImage(data: imageData) {
+                        self?.image = loadedImage
+                }
+            }
+        }
     }
 }

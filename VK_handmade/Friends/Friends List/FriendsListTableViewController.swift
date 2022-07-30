@@ -24,7 +24,7 @@ class FriendsListTableViewController: UITableViewController {
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "Friend", for: indexPath) as! FriendTableViewCell
-        cell.configure(name: "Boss", image: nil)
+        cell.friendName.text = "Test"
         return cell
     }
     
