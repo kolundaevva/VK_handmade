@@ -23,8 +23,8 @@ class GroupTableViewCell: UITableViewCell {
         // Configure the view for the selected state
     }
     
-    func configure(name: String, image: UIImage?) {
-        groupName.text = name
-        groupImage.image = image
+    func configure(with group: Group) {
+        groupName.text = group.name
+        groupImage.loadFrom(URLAddress: group.photo)
     }
 }

@@ -187,6 +187,7 @@
                     <navigationItem key="navigationItem" id="zWE-fA-ypf">
                         <barButtonItem key="rightBarButtonItem" systemItem="add" id="XQa-qh-gwx">
                             <connections>
+                                <action selector="addNewGroupPressed:" destination="If2-Pm-Z8c" id="UZy-ho-6c7"/>
                                 <segue destination="3ew-MK-tgS" kind="show" id="3Zj-Kc-8e2"/>
                             </connections>
                         </barButtonItem>
@@ -199,7 +200,7 @@
         <!--Groups List Table View Controller-->
         <scene sceneID="K9a-Pv-nse">
             <objects>
-                <tableViewController id="3ew-MK-tgS" customClass="GroupsListTableViewController" customModule="VK_handmade" customModuleProvider="target" sceneMemberID="viewController">
+                <tableViewController storyboardIdentifier="Search" useStoryboardIdentifierAsRestorationIdentifier="YES" id="3ew-MK-tgS" customClass="GroupsListTableViewController" customModule="VK_handmade" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" id="FTC-Mh-XzX">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -230,7 +231,7 @@
         <!--Friend Photo Collection View Controller-->
         <scene sceneID="gL7-Q4-4pB">
             <objects>
-                <collectionViewController id="3kG-bH-xV4" customClass="FriendPhotoCollectionViewController" customModule="VK_handmade" customModuleProvider="target" sceneMemberID="viewController">
+                <collectionViewController storyboardIdentifier="Photos" useStoryboardIdentifierAsRestorationIdentifier="YES" id="3kG-bH-xV4" customClass="FriendPhotoCollectionViewController" customModule="VK_handmade" customModuleProvider="target" sceneMemberID="viewController">
                     <collectionView key="view" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" id="CcD-Qd-YeX">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -266,7 +267,6 @@
         <!--Screen 1-->
         <scene sceneID="KuF-8f-oNN">
             <objects>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="79o-CN-CoW" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="s3S-tS-vbW" sceneMemberID="viewController">
                     <tabBarItem key="tabBarItem" title="Screen 1" id="e6L-NB-nfF"/>
                     <toolbarItems/>
@@ -279,6 +279,7 @@
                         <segue destination="PiL-ni-h8K" kind="relationship" relationship="rootViewController" id="VSX-U8-SOh"/>
                     </connections>
                 </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="79o-CN-CoW" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="2594" y="-363"/>
         </scene>
@@ -305,7 +306,6 @@
         <!--Screen 2-->
         <scene sceneID="J0t-fD-ibI">
             <objects>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="Ihl-28-aDR" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="ZVM-Ae-0hK" sceneMemberID="viewController">
                     <tabBarItem key="tabBarItem" title="Screen 2" id="bHq-h4-0Js"/>
                     <toolbarItems/>
@@ -318,6 +318,7 @@
                         <segue destination="If2-Pm-Z8c" kind="relationship" relationship="rootViewController" id="uiO-pd-Hem"/>
                     </connections>
                 </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Ihl-28-aDR" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="2593" y="383"/>
         </scene>

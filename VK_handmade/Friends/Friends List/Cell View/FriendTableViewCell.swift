@@ -19,28 +19,10 @@ class FriendTableViewCell: UITableViewCell {
 
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
-
-        // Configure the view for the selected state
     }
     
-    func configure(name: String, image: String) {
-        friendName.text = name
-        friendImage.loadFrom(URLAddress: image)
-    }
-}
-
-extension UIImageView {
-    func loadFrom(URLAddress: String) {
-        guard let url = URL(string: URLAddress) else {
-            return
-        }
-        
-        DispatchQueue.main.async { [weak self] in
-            if let imageData = try? Data(contentsOf: url) {
-                if let loadedImage = UIImage(data: imageData) {
-                        self?.image = loadedImage
-                }
-            }
-        }
+    func configure(with friend: Friend) {
+        friendName.text = "\(friend.firstName) \(friend.lastName)"
+        friendImage.loadFrom(URLAddress: friend.photo)
     }
 }

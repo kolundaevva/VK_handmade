@@ -8,10 +8,10 @@
 import UIKit
 
 protocol NetworkServiceDescription {
-    func getFriendList()
-    func getUserPhotos(id: String)
-    func getUserGroupsList(user id: String)
-    func searchGroups(name: String)
+    func getFriendList(completion: @escaping ([Friend]) -> Void)
+    func getUserPhotos(id: String, completion: @escaping ([Item]) -> Void)
+    func getUserGroupsList(completion: @escaping ([Group]) -> Void)
+    func searchGroups(name: String, completion: @escaping ([Group]) -> Void)
 }
 
 final class NetworkService: NetworkServiceDescription {
@@ -19,14 +19,14 @@ final class NetworkService: NetworkServiceDescription {
     private let baseURL = "api.vk.com"
     private let userID = ApiKey.userID.rawValue
     private let token = ApiKey.vkToken.rawValue
+    private let photosToken = ApiKey.photosToken.rawValue
         
     private let configuration = URLSessionConfiguration.default
     private lazy var session = URLSession(configuration: configuration)
     private var urlConstructor = URLComponents()
     private let jsonDecoder = JSONDecoder()
     
-    func getFriendList() {
-        
+    func getFriendList(completion: @escaping ([Friend]) -> Void) {
         urlConstructor.scheme = "https"
         urlConstructor.host = baseURL
         urlConstructor.path = "/method/friends.get"
@@ -46,21 +46,26 @@ final class NetworkService: NetworkServiceDescription {
                     return
                 }
                 
-                let json = try? JSONSerialization.jsonObject(with: data!, options: JSONSerialization.ReadingOptions.allowFragments)
-                print(json)
+                guard let data = data else { return }
+                do {
+                    let users = try self.jsonDecoder.decode(User.self, from: data)
+                    completion(users.response.items)
+                } catch {
+                    print(error.localizedDescription)
+                }
             }.resume()
         } else {
             print("Error")
         }
     }
     
-    func getUserPhotos(id: String) {
+    func getUserPhotos(id: String, completion: @escaping ([Item]) -> Void) {
         urlConstructor.scheme = "https"
         urlConstructor.host = baseURL
         urlConstructor.path = "/method/photos.getAll"
         urlConstructor.queryItems = [
             URLQueryItem(name: "owner_id", value: id),
-            URLQueryItem(name: "access_token", value: token),
+            URLQueryItem(name: "access_token", value: photosToken),
             URLQueryItem(name: "v", value: "5.131")
         ]
         
@@ -73,20 +78,25 @@ final class NetworkService: NetworkServiceDescription {
                     return
                 }
                 
-                let json = try? JSONSerialization.jsonObject(with: data!, options: JSONSerialization.ReadingOptions.allowFragments)
-                print(json)
+                guard let data = data else { return }
+                do {
+                    let items = try self.jsonDecoder.decode(Photo.self, from: data).response.items
+                    completion(items)
+                } catch {
+                    print(error.localizedDescription)
+                }
             }.resume()
         } else {
             print("Error")
         }
     }
     
-    func getUserGroupsList(user id: String) {
+    func getUserGroupsList(completion: @escaping ([Group]) -> Void) {
         urlConstructor.scheme = "https"
         urlConstructor.host = baseURL
         urlConstructor.path = "/method/groups.get"
         urlConstructor.queryItems = [
-            URLQueryItem(name: "user_id", value: id),
+            URLQueryItem(name: "user_id", value: userID),
             URLQueryItem(name: "extended", value: "1"),
             URLQueryItem(name: "access_token", value: token),
             URLQueryItem(name: "v", value: "5.131")
@@ -101,15 +111,20 @@ final class NetworkService: NetworkServiceDescription {
                     return
                 }
                 
-                let json = try? JSONSerialization.jsonObject(with: data!, options: JSONSerialization.ReadingOptions.allowFragments)
-                print(json)
+                guard let data = data else { return }
+                do {
+                    let groups = try self.jsonDecoder.decode(GroupData.self, from: data).response.items
+                    completion(groups)
+                } catch {
+                    print(error.localizedDescription)
+                }
             }.resume()
         } else {
             print("Error")
         }
     }
     
-    func searchGroups(name: String) {
+    func searchGroups(name: String, completion: @escaping ([Group]) -> Void) {
         urlConstructor.scheme = "https"
         urlConstructor.host = baseURL
         urlConstructor.path = "/method/groups.search"
@@ -128,8 +143,13 @@ final class NetworkService: NetworkServiceDescription {
                     return
                 }
                 
-                let json = try? JSONSerialization.jsonObject(with: data!, options: JSONSerialization.ReadingOptions.allowFragments)
-                print(json)
+                guard let data = data else { return }
+                do {
+                    let groups = try self.jsonDecoder.decode(GroupData.self, from: data).response.items
+                    completion(groups)
+                } catch {
+                    print(error.localizedDescription)
+                }
             }.resume()
         } else {
             print("Error")
