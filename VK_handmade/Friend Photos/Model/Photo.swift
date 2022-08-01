@@ -6,7 +6,7 @@
 //
 
 import Foundation
-
+import RealmSwift
 
 // MARK: - Photo
 class Photo: Codable {
@@ -40,13 +40,14 @@ class Item: Codable {
 }
 
 // MARK: - Size
-class Size: Codable {
-    let height: Int
-    let url: String
-    let type: String
-    let width: Int
+class Size: Object, Codable {
+    @objc dynamic var height: Int
+    @objc dynamic var url: String
+    @objc dynamic var type: String
+    @objc dynamic var width: Int
 
-    init(height: Int, url: String, type: String, width: Int) {
+    convenience init(height: Int, url: String, type: String, width: Int) {
+        self.init()
         self.height = height
         self.url = url
         self.type = type

@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import RealmSwift
 
 // MARK: - User
 class User: Codable {
@@ -26,10 +27,10 @@ class Response: Codable {
 }
 
 // MARK: - Item
-class Friend: Codable {
-    let id: Int
-    let photo: String
-    let firstName, lastName: String
+class Friend: Object, Codable {
+    @objc dynamic var id: Int
+    @objc dynamic var photo: String
+    @objc dynamic var firstName, lastName: String
 
     enum CodingKeys: String, CodingKey {
         case id
@@ -38,7 +39,9 @@ class Friend: Codable {
         case lastName = "last_name"
     }
 
-    init(id: Int, photo: String, firstName: String, lastName: String) {
+    convenience init(id: Int, photo: String, firstName: String, lastName: String) {
+        self.init()
+        
         self.id = id
         self.photo = photo
         self.firstName = firstName

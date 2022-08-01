@@ -15,7 +15,6 @@ protocol NetworkServiceDescription {
 }
 
 final class NetworkService: NetworkServiceDescription {
-    
     private let baseURL = "api.vk.com"
     private let userID = ApiKey.userID.rawValue
     private let token = ApiKey.vkToken.rawValue
@@ -25,6 +24,7 @@ final class NetworkService: NetworkServiceDescription {
     private lazy var session = URLSession(configuration: configuration)
     private var urlConstructor = URLComponents()
     private let jsonDecoder = JSONDecoder()
+    private let dataManager: Manager = DataManager()
     
     func getFriendList(completion: @escaping ([Friend]) -> Void) {
         urlConstructor.scheme = "https"
@@ -48,8 +48,9 @@ final class NetworkService: NetworkServiceDescription {
                 
                 guard let data = data else { return }
                 do {
-                    let users = try self.jsonDecoder.decode(User.self, from: data)
-                    completion(users.response.items)
+                    let users = try self.jsonDecoder.decode(User.self, from: data).response.items
+//                    self.dataManager.saveData(users)
+                    completion(users)
                 } catch {
                     print(error.localizedDescription)
                 }
@@ -81,6 +82,8 @@ final class NetworkService: NetworkServiceDescription {
                 guard let data = data else { return }
                 do {
                     let items = try self.jsonDecoder.decode(Photo.self, from: data).response.items
+                    guard let photo = items.first?.sizes else { return }
+//                    self.dataManager.saveData(photo)
                     completion(items)
                 } catch {
                     print(error.localizedDescription)
@@ -114,6 +117,7 @@ final class NetworkService: NetworkServiceDescription {
                 guard let data = data else { return }
                 do {
                     let groups = try self.jsonDecoder.decode(GroupData.self, from: data).response.items
+//                    self.dataManager.saveData(groups)
                     completion(groups)
                 } catch {
                     print(error.localizedDescription)
@@ -146,6 +150,7 @@ final class NetworkService: NetworkServiceDescription {
                 guard let data = data else { return }
                 do {
                     let groups = try self.jsonDecoder.decode(GroupData.self, from: data).response.items
+//                    self.dataManager.saveData(groups)
                     completion(groups)
                 } catch {
                     print(error.localizedDescription)
