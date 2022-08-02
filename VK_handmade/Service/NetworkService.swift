@@ -8,10 +8,10 @@
 import UIKit
 
 protocol NetworkServiceDescription {
-    func getFriendList(completion: @escaping ([Friend]) -> Void)
-    func getUserPhotos(id: String, completion: @escaping ([Item]) -> Void)
-    func getUserGroupsList(completion: @escaping ([Group]) -> Void)
-    func searchGroups(name: String, completion: @escaping ([Group]) -> Void)
+    func getFriendList(completion: @escaping () -> Void)
+    func getUserPhotos(id: String, completion: @escaping () -> Void)
+    func getUserGroupsList(completion: @escaping () -> Void)
+    func searchGroups(name: String, completion: @escaping () -> Void)
 }
 
 final class NetworkService: NetworkServiceDescription {
@@ -26,7 +26,7 @@ final class NetworkService: NetworkServiceDescription {
     private let jsonDecoder = JSONDecoder()
     private let dataManager: Manager = DataManager()
     
-    func getFriendList(completion: @escaping ([Friend]) -> Void) {
+    func getFriendList(completion: @escaping () -> Void) {
         urlConstructor.scheme = "https"
         urlConstructor.host = baseURL
         urlConstructor.path = "/method/friends.get"
@@ -40,27 +40,29 @@ final class NetworkService: NetworkServiceDescription {
         guard let url = urlConstructor.url else { return }
         
         if UIApplication.shared.canOpenURL(url) {
-            session.dataTask(with: url) { data, response, error in
-                if let error = error {
-                    print(error)
-                    return
-                }
-                
-                guard let data = data else { return }
-                do {
-                    let users = try self.jsonDecoder.decode(User.self, from: data).response.items
-//                    self.dataManager.saveData(users)
-                    completion(users)
-                } catch {
-                    print(error.localizedDescription)
-                }
-            }.resume()
+            DispatchQueue.main.async { [weak self] in
+                self?.session.dataTask(with: url) { data, response, error in
+                    if let error = error {
+                        print(error)
+                        return
+                    }
+                    
+                    guard let data = data else { return }
+                    do {
+                        guard let users = try self?.jsonDecoder.decode(VKUser.self, from: data).response.items else { return }
+                        self?.dataManager.saveFriends(users, pk: self!.userID)
+                        completion()
+                    } catch {
+                        print(error.localizedDescription)
+                    }
+                }.resume()
+            }
         } else {
             print("Error")
         }
     }
     
-    func getUserPhotos(id: String, completion: @escaping ([Item]) -> Void) {
+    func getUserPhotos(id: String, completion: @escaping () -> Void) {
         urlConstructor.scheme = "https"
         urlConstructor.host = baseURL
         urlConstructor.path = "/method/photos.getAll"
@@ -73,28 +75,30 @@ final class NetworkService: NetworkServiceDescription {
         guard let url = urlConstructor.url else { return }
         
         if UIApplication.shared.canOpenURL(url) {
-            session.dataTask(with: url) { data, response, error in
-                if let error = error {
-                    print(error)
-                    return
-                }
-                
-                guard let data = data else { return }
-                do {
-                    let items = try self.jsonDecoder.decode(Photo.self, from: data).response.items
-                    guard let photo = items.first?.sizes else { return }
-//                    self.dataManager.saveData(photo)
-                    completion(items)
-                } catch {
-                    print(error.localizedDescription)
-                }
-            }.resume()
+            DispatchQueue.main.async { [weak self] in
+                self?.session.dataTask(with: url) { data, response, error in
+                    if let error = error {
+                        print(error)
+                        return
+                    }
+                    
+                    guard let data = data else { return }
+                    
+                    do {
+                        guard let result = try self?.jsonDecoder.decode(VKPhoto.self, from: data).response.items else { return }
+                        self?.dataManager.saveUserPhotosData(result, pk: id)
+                        completion()
+                    } catch {
+                        print(error.localizedDescription)
+                    }
+                }.resume()
+            }
         } else {
             print("Error")
         }
     }
     
-    func getUserGroupsList(completion: @escaping ([Group]) -> Void) {
+    func getUserGroupsList(completion: @escaping () -> Void) {
         urlConstructor.scheme = "https"
         urlConstructor.host = baseURL
         urlConstructor.path = "/method/groups.get"
@@ -108,27 +112,29 @@ final class NetworkService: NetworkServiceDescription {
         guard let url = urlConstructor.url else { return }
         
         if UIApplication.shared.canOpenURL(url) {
-            session.dataTask(with: url) { data, response, error in
-                if let error = error {
-                    print(error)
-                    return
-                }
-                
-                guard let data = data else { return }
-                do {
-                    let groups = try self.jsonDecoder.decode(GroupData.self, from: data).response.items
-//                    self.dataManager.saveData(groups)
-                    completion(groups)
-                } catch {
-                    print(error.localizedDescription)
-                }
-            }.resume()
+            DispatchQueue.main.async { [weak self] in
+                self?.session.dataTask(with: url) { data, response, error in
+                    if let error = error {
+                        print(error)
+                        return
+                    }
+                    
+                    guard let data = data else { return }
+                    do {
+                        guard let result = try self?.jsonDecoder.decode(GroupData.self, from: data).response.items else { return }
+                        self?.dataManager.saveUserGroupsData(result, pk: self!.userID)
+                        completion()
+                    } catch {
+                        print(error.localizedDescription)
+                    }
+                }.resume()
+            }
         } else {
             print("Error")
         }
     }
     
-    func searchGroups(name: String, completion: @escaping ([Group]) -> Void) {
+    func searchGroups(name: String, completion: @escaping () -> Void) {
         urlConstructor.scheme = "https"
         urlConstructor.host = baseURL
         urlConstructor.path = "/method/groups.search"
@@ -141,21 +147,23 @@ final class NetworkService: NetworkServiceDescription {
         guard let url = urlConstructor.url else { return }
         
         if UIApplication.shared.canOpenURL(url) {
-            session.dataTask(with: url) { data, response, error in
-                if let error = error {
-                    print(error)
-                    return
-                }
-                
-                guard let data = data else { return }
-                do {
-                    let groups = try self.jsonDecoder.decode(GroupData.self, from: data).response.items
-//                    self.dataManager.saveData(groups)
-                    completion(groups)
-                } catch {
-                    print(error.localizedDescription)
-                }
-            }.resume()
+            DispatchQueue.main.async { [weak self] in
+                self?.session.dataTask(with: url) { data, response, error in
+                    if let error = error {
+                        print(error)
+                        return
+                    }
+                    
+                    guard let data = data else { return }
+                    do {
+//                        guard let groups = try self?.jsonDecoder.decode(GroupData.self, from: data).response.items else { return }
+//                        self.dataManager.sa
+                        completion()
+                    } catch {
+                        print(error.localizedDescription)
+                    }
+                }.resume()
+            }
         } else {
             print("Error")
         }

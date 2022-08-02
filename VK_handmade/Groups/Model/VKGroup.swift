@@ -6,7 +6,6 @@
 //
 
 import Foundation
-import RealmSwift
 
 // MARK: - Group
 class GroupData: Codable {
@@ -19,29 +18,25 @@ class GroupData: Codable {
 
 // MARK: - Response
 class Answer: Codable {
-    let count: Int
-    let items: [Group]
+    let items: [VKGroup]
 
-    init(count: Int, items: [Group]) {
-        self.count = count
+    init(items: [VKGroup]) {
         self.items = items
     }
 }
 
 // MARK: - Item
-class Group: Object, Codable {
-    @objc dynamic var id: Int
-    @objc dynamic var name: String
-    @objc dynamic var photo: String
+class VKGroup: Codable {
+    let id: Int
+    let name: String
+    let photo: String
 
     enum CodingKeys: String, CodingKey {
         case id, name
         case photo = "photo_50"
     }
 
-    convenience init(id: Int, name: String, photo: String) {
-        self.init()
-        
+    init(id: Int, name: String, photo: String) {
         self.id = id
         self.name = name
         self.photo = photo

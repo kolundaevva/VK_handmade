@@ -21,7 +21,7 @@ class FriendTableViewCell: UITableViewCell {
         super.setSelected(selected, animated: animated)
     }
     
-    func configure(with friend: Friend) {
+    func configure(with friend: User) {
         friendName.text = "\(friend.firstName) \(friend.lastName)"
         friendImage.loadFrom(URLAddress: friend.photo)
     }

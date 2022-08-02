@@ -6,10 +6,9 @@
 //
 
 import Foundation
-import RealmSwift
 
-// MARK: - Photo
-class Photo: Codable {
+// MARK: - VKPhoto
+class VKPhoto: Codable {
     let response: Result
 
     init(response: Result) {
@@ -28,26 +27,30 @@ class Result: Codable {
 
 // MARK: - Item
 class Item: Codable {
+    let id, ownerID: Int
     let sizes: [Size]
 
     enum CodingKeys: String, CodingKey {
+        case id
+        case ownerID = "owner_id"
         case sizes
     }
 
-    init(sizes: [Size]) {
+    init(id: Int, ownerID: Int, sizes: [Size]) {
+        self.id = id
+        self.ownerID = ownerID
         self.sizes = sizes
     }
 }
 
 // MARK: - Size
-class Size: Object, Codable {
-    @objc dynamic var height: Int
-    @objc dynamic var url: String
-    @objc dynamic var type: String
-    @objc dynamic var width: Int
+class Size: Codable {
+    let height: Int
+    let url: String
+    let type: String
+    let width: Int
 
-    convenience init(height: Int, url: String, type: String, width: Int) {
-        self.init()
+    init(height: Int, url: String, type: String, width: Int) {
         self.height = height
         self.url = url
         self.type = type

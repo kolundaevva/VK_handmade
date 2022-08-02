@@ -18,8 +18,8 @@ class GroupsListTableViewController: UITableViewController {
         let nib = UINib(nibName: "GroupTableViewCell", bundle: nil)
         tableView.register(nib, forCellReuseIdentifier: "Group")
 
-        network.searchGroups(name: "Music") { [weak self] grps in
-            self?.groups = grps
+        network.searchGroups(name: "Music") { [weak self]  in
+//            self?.groups = grps
             
             DispatchQueue.main.async {
                 self?.tableView.reloadData()

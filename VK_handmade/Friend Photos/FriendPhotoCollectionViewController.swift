@@ -10,7 +10,9 @@ import UIKit
 class FriendPhotoCollectionViewController: UICollectionViewController {
 
     private let network: NetworkServiceDescription = NetworkService()
-    private var items: [Item] = []
+    private let dataManger: Manager = DataManager()
+    
+    private var photos: [Photo] = []
     var id: String?
     
     override func viewDidLoad() {
@@ -19,10 +21,11 @@ class FriendPhotoCollectionViewController: UICollectionViewController {
         let nib = UINib(nibName: "PhotoCollectionViewCell", bundle: nil)
         collectionView.register(nib, forCellWithReuseIdentifier: "FriendPhoto")
         
-        network.getUserPhotos(id: id ?? ApiKey.userID.rawValue) { [weak self] itms in
-            self?.items = itms
-            
+        let id = id ?? ApiKey.userID.rawValue
+        
+        network.getUserPhotos(id: id) { [weak self] in
             DispatchQueue.main.async {
+                self?.photos = self?.dataManger.loadUserPhotos(id: id) ?? []
                 self?.collectionView.reloadData()
             }
         }
@@ -30,13 +33,13 @@ class FriendPhotoCollectionViewController: UICollectionViewController {
 
     // MARK: UICollectionViewDataSource
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return items.count
+        return photos.count
     }
 
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "FriendPhoto", for: indexPath) as! PhotoCollectionViewCell
-        guard let photoInformation = items[indexPath.row].sizes.first else { return UICollectionViewCell() }
-        cell.configure(with: photoInformation)
+        let photo = photos[indexPath.row]
+        cell.configure(with: photo)
         return cell
     }
 }

@@ -10,6 +10,7 @@ import UIKit
 class UserGroupsListTableViewController: UITableViewController {
 
     private let network: NetworkServiceDescription = NetworkService()
+    private let dataManager: Manager = DataManager()
     private var groups: [Group] = []
     
     override func viewDidLoad() {
@@ -18,10 +19,9 @@ class UserGroupsListTableViewController: UITableViewController {
         let nib = UINib(nibName: "GroupTableViewCell", bundle: nil)
         tableView.register(nib, forCellReuseIdentifier: "Group")
         
-        network.getUserGroupsList { [weak self] groups in
-            self?.groups = groups
-            
+        network.getUserGroupsList { [weak self] in
             DispatchQueue.main.async {
+                self?.groups = self?.dataManager.loadUserGroups(id: ApiKey.userID.rawValue) ?? []
                 self?.tableView.reloadData()
             }
         }

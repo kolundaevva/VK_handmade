@@ -15,7 +15,7 @@ class PhotoCollectionViewCell: UICollectionViewCell {
         // Initialization code
     }
 
-    func configure(with photo: Size) {
+    func configure(with photo: Photo) {
         photoView.loadFrom(URLAddress: photo.url)
     }
 }
