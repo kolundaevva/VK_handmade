@@ -8,10 +8,10 @@
 import UIKit
 
 protocol NetworkServiceDescription {
-    func getFriendList(completion: @escaping () -> Void)
-    func getUserPhotos(id: String, completion: @escaping () -> Void)
-    func getUserGroupsList(completion: @escaping () -> Void)
-    func searchGroups(name: String, completion: @escaping () -> Void)
+    func getFriendList()
+    func getUserPhotos(id: String)
+    func getUserGroupsList()
+    func searchGroups(name: String)
 }
 
 final class NetworkService: NetworkServiceDescription {
@@ -26,7 +26,7 @@ final class NetworkService: NetworkServiceDescription {
     private let jsonDecoder = JSONDecoder()
     private let dataManager: Manager = DataManager()
     
-    func getFriendList(completion: @escaping () -> Void) {
+    func getFriendList() {
         urlConstructor.scheme = "https"
         urlConstructor.host = baseURL
         urlConstructor.path = "/method/friends.get"
@@ -49,9 +49,8 @@ final class NetworkService: NetworkServiceDescription {
                     
                     guard let data = data else { return }
                     do {
-                        guard let users = try self?.jsonDecoder.decode(VKUser.self, from: data).response.items else { return }
-                        self?.dataManager.saveFriends(users, pk: self!.userID)
-                        completion()
+                        guard let friends = try self?.jsonDecoder.decode(VKUser.self, from: data).response.items else { return }
+                        self?.dataManager.saveFriends(friends)
                     } catch {
                         print(error.localizedDescription)
                     }
@@ -62,7 +61,7 @@ final class NetworkService: NetworkServiceDescription {
         }
     }
     
-    func getUserPhotos(id: String, completion: @escaping () -> Void) {
+    func getUserPhotos(id: String) {
         urlConstructor.scheme = "https"
         urlConstructor.host = baseURL
         urlConstructor.path = "/method/photos.getAll"
@@ -87,7 +86,6 @@ final class NetworkService: NetworkServiceDescription {
                     do {
                         guard let result = try self?.jsonDecoder.decode(VKPhoto.self, from: data).response.items else { return }
                         self?.dataManager.saveUserPhotosData(result, pk: id)
-                        completion()
                     } catch {
                         print(error.localizedDescription)
                     }
@@ -98,7 +96,7 @@ final class NetworkService: NetworkServiceDescription {
         }
     }
     
-    func getUserGroupsList(completion: @escaping () -> Void) {
+    func getUserGroupsList() {
         urlConstructor.scheme = "https"
         urlConstructor.host = baseURL
         urlConstructor.path = "/method/groups.get"
@@ -122,8 +120,7 @@ final class NetworkService: NetworkServiceDescription {
                     guard let data = data else { return }
                     do {
                         guard let result = try self?.jsonDecoder.decode(GroupData.self, from: data).response.items else { return }
-                        self?.dataManager.saveUserGroupsData(result, pk: self!.userID)
-                        completion()
+                        self?.dataManager.saveUserGroupsData(result)
                     } catch {
                         print(error.localizedDescription)
                     }
@@ -134,7 +131,7 @@ final class NetworkService: NetworkServiceDescription {
         }
     }
     
-    func searchGroups(name: String, completion: @escaping () -> Void) {
+    func searchGroups(name: String) {
         urlConstructor.scheme = "https"
         urlConstructor.host = baseURL
         urlConstructor.path = "/method/groups.search"
@@ -156,9 +153,8 @@ final class NetworkService: NetworkServiceDescription {
                     
                     guard let data = data else { return }
                     do {
-//                        guard let groups = try self?.jsonDecoder.decode(GroupData.self, from: data).response.items else { return }
-//                        self.dataManager.sa
-                        completion()
+                        guard let groups = try self?.jsonDecoder.decode(GroupData.self, from: data).response.items else { return }
+                        self?.dataManager.saveSearchGroups(groups)
                     } catch {
                         print(error.localizedDescription)
                     }

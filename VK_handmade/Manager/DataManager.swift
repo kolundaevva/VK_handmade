@@ -9,24 +9,27 @@ import Foundation
 import RealmSwift
 
 protocol Manager {
-    func saveFriends(_ data: [Friend], pk: String)
+    func saveFriends(_ data: [VKFriend])
     func saveUserPhotosData(_ data: [Item], pk: String)
-    func saveUserGroupsData(_ data: [VKGroup], pk: String)
-    func loadFriendsData(id: String) -> [User]
-    func loadUserPhotos(id: String) -> [Photo]
-    func loadUserGroups(id: String) -> [Group]
+    func saveUserGroupsData(_ data: [VKGroup])
+    func saveSearchGroups(_ data: [VKGroup])
 }
 
 class DataManager: Manager {
-    func saveFriends(_ data: [Friend], pk: String) {
-        print("HEEEEERE")
-        print(data)
-        print(pk)
+    func saveFriends(_ data: [VKFriend]) {
         do {
             let realm = try Realm()
-            let users = data.map { User(userId: pk, user: $0) }
+            guard let user = realm.object(ofType: User.self, forPrimaryKey: ApiKey.userID.rawValue) else { return }
+            let friends = data.map { Friend(user: $0) }
+            let oldFriends = user.friends
+
             try realm.write {
-                realm.add(users, update: .modified)
+                oldFriends.forEach { frd in
+                    realm.delete(frd.photos)
+                }
+                
+                realm.delete(oldFriends)
+                user.friends.append(objectsIn: friends)
             }
         } catch {
             print(error)
@@ -36,60 +39,48 @@ class DataManager: Manager {
     func saveUserPhotosData(_ data: [Item], pk: String) {
         do {
             let realm = try Realm()
+            let id = Int(pk) ?? 0
+            guard let user = realm.object(ofType: Friend.self, forPrimaryKey: id) else { return }
             let photos = data.map { Photo(photo: $0) }
+            let oldPhotos = user.photos
+            
             try realm.write {
-                realm.add(photos, update: .modified)
+                realm.delete(oldPhotos)
+                user.photos.append(objectsIn: photos)
             }
         } catch {
             print(error)
         }
     }
     
-    func saveUserGroupsData(_ data: [VKGroup], pk: String) {
+    func saveUserGroupsData(_ data: [VKGroup]) {
         do {
             let realm = try Realm()
-            let groups = data.map { Group(userId: pk, group: $0) }
+            guard let user = realm.object(ofType: User.self, forPrimaryKey: ApiKey.userID.rawValue) else { return }
+            let groups = data.map { Group(group: $0) }
+            let oldGourps = user.friends
+
             try realm.write {
-                realm.add(groups, update: .modified)
+                realm.delete(oldGourps)
+                user.groups.append(objectsIn: groups)
             }
         } catch {
             print(error)
         }
     }
     
-    func loadFriendsData(id: String) -> [User] {
-        do {
-            let realm = try Realm()
-            let userId = Int(id) ?? 0
-            let list = realm.objects(User.self).filter("userId == %@", userId)
-            return Array(list)
-        } catch {
-            print(error)
-            return []
-        }
-    }
-    
-    func loadUserPhotos(id: String) -> [Photo] {
-        do {
-            let realm = try Realm()
-            let userId = Int(id) ?? 0
-            let list = realm.objects(Photo.self).filter("ownerId == %@", userId)
-            return Array(list)
-        } catch {
-            print(error)
-            return []
-        }
-    }
-    
-    func loadUserGroups(id: String) -> [Group] {
-        do {
-            let realm = try Realm()
-            let userId = Int(id) ?? 0
-            let list = realm.objects(Group.self).filter("userId == %@", userId)
-            return Array(list)
-        } catch {
-            print(error)
-            return []
-        }
-    }
+//    func saveSearchGroups(_ data: [VKGroup]) {
+//        do {
+//            let realm = try Realm()
+//            let groups = data.map { Group(group: $0) }
+//            let oldGourps = realm.objects(Group.self)
+//
+//            try realm.write {
+//                realm.delete(oldGourps)
+//                realm.add(groups)
+//            }
+//        } catch {
+//            print(error)
+//        }
+//    }
 }

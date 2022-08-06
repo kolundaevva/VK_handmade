@@ -18,15 +18,15 @@ class VKUser: Codable {
 
 // MARK: - Response
 class Response: Codable {
-    let items: [Friend]
+    let items: [VKFriend]
 
-    init(items: [Friend]) {
+    init(items: [VKFriend]) {
         self.items = items
     }
 }
 
 // MARK: - Item
-class Friend: Codable {
+class VKFriend: Codable {
     let id: Int
     let photo: String
     let firstName, lastName: String

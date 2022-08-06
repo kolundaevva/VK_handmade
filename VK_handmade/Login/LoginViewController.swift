@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import RealmSwift
 
 class LoginViewController: UIViewController {
 
@@ -14,6 +15,7 @@ class LoginViewController: UIViewController {
     @IBOutlet weak var passwordTF: UITextField!
     
     private let notification = NotificationCenter.default
+    private let defaults = UserDefaults.standard
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -69,6 +71,19 @@ class LoginViewController: UIViewController {
         guard !login.isEmpty || !password.isEmpty else { return false }
         
         if login == "login", password == "qwerty123" {
+            if !defaults.bool(forKey: "authorized") {
+                let user = User()
+                
+                do {
+                    let realm = try Realm()
+                    try realm.write {
+                        realm.add(user)
+                    }
+                } catch {
+                    print(error)
+                }
+                defaults.set(true, forKey: "authorized")
+            }
             return true
         } else {
             return false
