@@ -11,7 +11,8 @@ protocol NetworkServiceDescription {
     func getFriendList()
     func getUserPhotos(id: String)
     func getUserGroupsList()
-    func searchGroups(name: String)
+    func searchGroups(name: String, completion: @escaping ([Group]) -> Void)
+    func joinGroup(id: Int)
 }
 
 final class NetworkService: NetworkServiceDescription {
@@ -19,6 +20,7 @@ final class NetworkService: NetworkServiceDescription {
     private let userID = ApiKey.userID.rawValue
     private let token = ApiKey.vkToken.rawValue
     private let photosToken = ApiKey.photosToken.rawValue
+    private let groupsToke = ApiKey.groupsToken.rawValue
         
     private let configuration = URLSessionConfiguration.default
     private lazy var session = URLSession(configuration: configuration)
@@ -131,7 +133,7 @@ final class NetworkService: NetworkServiceDescription {
         }
     }
     
-    func searchGroups(name: String) {
+    func searchGroups(name: String, completion: @escaping ([Group]) -> Void) {
         urlConstructor.scheme = "https"
         urlConstructor.host = baseURL
         urlConstructor.path = "/method/groups.search"
@@ -153,8 +155,9 @@ final class NetworkService: NetworkServiceDescription {
                     
                     guard let data = data else { return }
                     do {
-                        guard let groups = try self?.jsonDecoder.decode(GroupData.self, from: data).response.items else { return }
-                        self?.dataManager.saveSearchGroups(groups)
+                        guard let VKGroups = try self?.jsonDecoder.decode(GroupData.self, from: data).response.items else { return }
+                        let groups = VKGroups.map { Group(group: $0) }
+                        completion(groups)
                     } catch {
                         print(error.localizedDescription)
                     }
@@ -163,5 +166,16 @@ final class NetworkService: NetworkServiceDescription {
         } else {
             print("Error")
         }
+    }
+    
+    func joinGroup(id: Int) {
+        urlConstructor.scheme = "https"
+        urlConstructor.host = baseURL
+        urlConstructor.path = "/method/groups.join"
+        urlConstructor.queryItems = [
+            URLQueryItem(name: "group_id", value: "\(id)"),
+            URLQueryItem(name: "access_token", value: token),
+            URLQueryItem(name: "v", value: "5.131")
+        ]
     }
 }

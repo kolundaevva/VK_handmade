@@ -220,9 +220,7 @@
                             <outlet property="delegate" destination="3ew-MK-tgS" id="5Fi-CN-qHS"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" id="eRr-su-bpY">
-                        <barButtonItem key="rightBarButtonItem" systemItem="save" id="Gam-O1-jIV"/>
-                    </navigationItem>
+                    <navigationItem key="navigationItem" id="eRr-su-bpY"/>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="SiA-FG-ra7" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>

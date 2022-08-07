@@ -12,7 +12,7 @@ protocol Manager {
     func saveFriends(_ data: [VKFriend])
     func saveUserPhotosData(_ data: [Item], pk: String)
     func saveUserGroupsData(_ data: [VKGroup])
-    func saveSearchGroups(_ data: [VKGroup])
+    func addGroup(_ group: Group)
 }
 
 class DataManager: Manager {
@@ -58,7 +58,7 @@ class DataManager: Manager {
             let realm = try Realm()
             guard let user = realm.object(ofType: User.self, forPrimaryKey: ApiKey.userID.rawValue) else { return }
             let groups = data.map { Group(group: $0) }
-            let oldGourps = user.friends
+            let oldGourps = user.groups
 
             try realm.write {
                 realm.delete(oldGourps)
@@ -69,18 +69,16 @@ class DataManager: Manager {
         }
     }
     
-//    func saveSearchGroups(_ data: [VKGroup]) {
-//        do {
-//            let realm = try Realm()
-//            let groups = data.map { Group(group: $0) }
-//            let oldGourps = realm.objects(Group.self)
-//
-//            try realm.write {
-//                realm.delete(oldGourps)
-//                realm.add(groups)
-//            }
-//        } catch {
-//            print(error)
-//        }
-//    }
+    func addGroup(_ group: Group) {
+        do {
+            let realm = try Realm()
+            guard let user = realm.object(ofType: User.self, forPrimaryKey: ApiKey.userID.rawValue) else { return }
+            
+            try realm.write {
+                user.groups.append(group)
+            }
+        } catch {
+            print(error)
+        }
+    }
 }
