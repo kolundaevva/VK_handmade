@@ -15,7 +15,7 @@ class FriendsListTableViewController: UITableViewController {
     
     private var friends: List<Friend>?
     private var token: NotificationToken?
-    private let id = ApiKey.userID.rawValue
+    private let id = ApiKey.session.userId
     
     override func viewDidLoad() {
         super.viewDidLoad()

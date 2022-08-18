@@ -9,7 +9,7 @@ import Foundation
 import RealmSwift
 
 class User: Object {
-    @objc dynamic var id = ApiKey.userID.rawValue
+    @objc dynamic var id = ""
     var friends = List<Friend>()
     var groups = List<Group>()
     

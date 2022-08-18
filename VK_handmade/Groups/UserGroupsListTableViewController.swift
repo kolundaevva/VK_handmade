@@ -15,7 +15,7 @@ class UserGroupsListTableViewController: UITableViewController {
     
     private var groups: List<Group>?
     private var token: NotificationToken?
-    private let id = ApiKey.userID.rawValue
+    private let id = ApiKey.session.userId
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -23,8 +23,8 @@ class UserGroupsListTableViewController: UITableViewController {
         let nib = UINib(nibName: "GroupTableViewCell", bundle: nil)
         tableView.register(nib, forCellReuseIdentifier: "Group")
         
-        //        Realm.Configuration.defaultConfiguration = Realm.Configuration(deleteRealmIfMigrationNeeded: true)
         network.getUserGroupsList()
+        network.getNewsFeed()
         pairTableAndRealm()
     }
     

@@ -9,6 +9,7 @@ import Foundation
 import RealmSwift
 
 protocol Manager {
+    func saveUser(id: String)
     func saveFriends(_ data: [VKFriend])
     func saveUserPhotosData(_ data: [Item], pk: String)
     func saveUserGroupsData(_ data: [VKGroup])
@@ -16,10 +17,25 @@ protocol Manager {
 }
 
 class DataManager: Manager {
+    func saveUser(id: String) {
+        let user = User()
+        user.id = id
+        
+        do {
+            let realm = try Realm()
+            
+            try realm.write {
+                realm.add(user)
+            }
+        } catch {
+            
+        }
+    }
+    
     func saveFriends(_ data: [VKFriend]) {
         do {
             let realm = try Realm()
-            guard let user = realm.object(ofType: User.self, forPrimaryKey: ApiKey.userID.rawValue) else { return }
+            guard let user = realm.object(ofType: User.self, forPrimaryKey: ApiKey.session.userId) else { return }
             let friends = data.map { Friend(user: $0) }
             let oldFriends = user.friends
 
@@ -56,7 +72,7 @@ class DataManager: Manager {
     func saveUserGroupsData(_ data: [VKGroup]) {
         do {
             let realm = try Realm()
-            guard let user = realm.object(ofType: User.self, forPrimaryKey: ApiKey.userID.rawValue) else { return }
+            guard let user = realm.object(ofType: User.self, forPrimaryKey: ApiKey.session.userId) else { return }
             let groups = data.map { Group(group: $0) }
             let oldGourps = user.groups
 
@@ -72,7 +88,7 @@ class DataManager: Manager {
     func addGroup(_ group: Group) {
         do {
             let realm = try Realm()
-            guard let user = realm.object(ofType: User.self, forPrimaryKey: ApiKey.userID.rawValue) else { return }
+            guard let user = realm.object(ofType: User.self, forPrimaryKey: ApiKey.session.userId) else { return }
             
             try realm.write {
                 user.groups.append(group)

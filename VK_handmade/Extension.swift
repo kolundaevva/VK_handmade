@@ -17,7 +17,9 @@ extension UIImageView {
             if let imageData = try? Data(contentsOf: url) {
                 if let loadedImage = UIImage(data: imageData) {
                     DispatchQueue.main.async {
-                        self?.image = loadedImage
+                        if URLAddress == url.absoluteString {                        
+                            self?.image = loadedImage
+                        }
                     }
                 }
             }

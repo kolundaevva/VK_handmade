@@ -13,14 +13,13 @@ protocol NetworkServiceDescription {
     func getUserGroupsList()
     func searchGroups(name: String, completion: @escaping ([Group]) -> Void)
     func joinGroup(id: Int)
+    func getNewsFeed()
 }
 
 final class NetworkService: NetworkServiceDescription {
     private let baseURL = "api.vk.com"
-    private let userID = ApiKey.userID.rawValue
-    private let token = ApiKey.vkToken.rawValue
-    private let photosToken = ApiKey.photosToken.rawValue
-    private let groupsToke = ApiKey.groupsToken.rawValue
+    private let userID = ApiKey.session.userId
+    private let token = ApiKey.session.token
         
     private let configuration = URLSessionConfiguration.default
     private lazy var session = URLSession(configuration: configuration)
@@ -69,7 +68,7 @@ final class NetworkService: NetworkServiceDescription {
         urlConstructor.path = "/method/photos.getAll"
         urlConstructor.queryItems = [
             URLQueryItem(name: "owner_id", value: id),
-            URLQueryItem(name: "access_token", value: photosToken),
+            URLQueryItem(name: "access_token", value: token),
             URLQueryItem(name: "v", value: "5.131")
         ]
         
@@ -177,5 +176,40 @@ final class NetworkService: NetworkServiceDescription {
             URLQueryItem(name: "access_token", value: token),
             URLQueryItem(name: "v", value: "5.131")
         ]
+    }
+    
+    func getNewsFeed() {
+        urlConstructor.scheme = "https"
+        urlConstructor.host = baseURL
+        urlConstructor.path = "/method/newsfeed.get"
+        urlConstructor.queryItems = [
+            URLQueryItem(name: "access_token", value: token),
+            URLQueryItem(name: "filters", value: "post,photo"),
+            URLQueryItem(name: "v", value: "5.131")
+        ]
+        
+        guard let url = urlConstructor.url else { return }
+        
+        if UIApplication.shared.canOpenURL(url) {
+            DispatchQueue.main.async { [weak self] in
+                self?.session.dataTask(with: url) { data, response, error in
+                    if let error = error {
+                        print(error)
+                        return
+                    }
+                    
+//                    print(url)
+                    guard let data = data else { return }
+                    do {
+                        let json = try? JSONSerialization.jsonObject(with: data, options: JSONSerialization.ReadingOptions.mutableContainers)
+//                        print(json)
+                    } catch {
+                        print(error.localizedDescription)
+                    }
+                }.resume()
+            }
+        } else {
+            print("Error")
+        }
     }
 }

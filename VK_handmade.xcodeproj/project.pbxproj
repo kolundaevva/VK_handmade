@@ -28,6 +28,8 @@
 		4727740828997E770077ED0F /* Photo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4727740728997E770077ED0F /* Photo.swift */; };
 		4727740A289984C40077ED0F /* Group.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47277409289984C40077ED0F /* Group.swift */; };
 		4727740E289D4CF00077ED0F /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4727740D289D4CF00077ED0F /* User.swift */; };
+		47277411289FF08F0077ED0F /* PostsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47277410289FF08F0077ED0F /* PostsTableViewController.swift */; };
+		475483E128AE5B7D00F999A8 /* LoginVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 475483E028AE5B7D00F999A8 /* LoginVC.swift */; };
 		47E7D51D2892C6980052DE8C /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47E7D51C2892C6980052DE8C /* AppDelegate.swift */; };
 		47E7D51F2892C6980052DE8C /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47E7D51E2892C6980052DE8C /* SceneDelegate.swift */; };
 		47E7D5212892C6980052DE8C /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47E7D5202892C6980052DE8C /* LoginViewController.swift */; };
@@ -61,6 +63,8 @@
 		4727740728997E770077ED0F /* Photo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Photo.swift; sourceTree = "<group>"; };
 		47277409289984C40077ED0F /* Group.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Group.swift; sourceTree = "<group>"; };
 		4727740D289D4CF00077ED0F /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
+		47277410289FF08F0077ED0F /* PostsTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostsTableViewController.swift; sourceTree = "<group>"; };
+		475483E028AE5B7D00F999A8 /* LoginVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginVC.swift; sourceTree = "<group>"; };
 		47E7D5192892C6980052DE8C /* VK_handmade.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = VK_handmade.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		47E7D51C2892C6980052DE8C /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		47E7D51E2892C6980052DE8C /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -219,6 +223,14 @@
 			path = Model;
 			sourceTree = "<group>";
 		};
+		4727740F289FF0730077ED0F /* Posts */ = {
+			isa = PBXGroup;
+			children = (
+				47277410289FF08F0077ED0F /* PostsTableViewController.swift */,
+			);
+			path = Posts;
+			sourceTree = "<group>";
+		};
 		47E7D5102892C6980052DE8C = {
 			isa = PBXGroup;
 			children = (
@@ -246,6 +258,7 @@
 				472773B72892D2B50077ED0F /* Friends */,
 				472773C32892D3570077ED0F /* Friend Photos */,
 				472773B62892D2A60077ED0F /* Groups */,
+				4727740F289FF0730077ED0F /* Posts */,
 				472773E628945D230077ED0F /* Service */,
 				472774002897EB560077ED0F /* Manager */,
 				472773F82896E9340077ED0F /* Extension.swift */,
@@ -253,6 +266,7 @@
 				47E7D5252892C6990052DE8C /* Assets.xcassets */,
 				47E7D5272892C6990052DE8C /* LaunchScreen.storyboard */,
 				47E7D52A2892C6990052DE8C /* Info.plist */,
+				475483E028AE5B7D00F999A8 /* LoginVC.swift */,
 			);
 			path = VK_handmade;
 			sourceTree = "<group>";
@@ -393,6 +407,7 @@
 				472773DA2892D91E0077ED0F /* FriendTableViewCell.swift in Sources */,
 				472773F72896E5140077ED0F /* VKPhoto.swift in Sources */,
 				472773DF2892D9910077ED0F /* GroupTableViewCell.swift in Sources */,
+				47277411289FF08F0077ED0F /* PostsTableViewController.swift in Sources */,
 				472773F32896C9590077ED0F /* VKUser.swift in Sources */,
 				472774022897EB610077ED0F /* DataManager.swift in Sources */,
 				472773B92892D2E40077ED0F /* FriendsListTableViewController.swift in Sources */,
@@ -405,6 +420,7 @@
 				472773EA2894691E0077ED0F /* NetworkService.swift in Sources */,
 				47E7D51F2892C6980052DE8C /* SceneDelegate.swift in Sources */,
 				4727740E289D4CF00077ED0F /* User.swift in Sources */,
+				475483E128AE5B7D00F999A8 /* LoginVC.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
