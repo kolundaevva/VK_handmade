@@ -12,17 +12,29 @@ class FriendTableViewCell: UITableViewCell {
     @IBOutlet weak var friendName: UILabel!
     @IBOutlet weak var friendImage: UIImageView!
     
-    override func awakeFromNib() {
-        super.awakeFromNib()
-        // Initialization code
-    }
-
-    override func setSelected(_ selected: Bool, animated: Bool) {
-        super.setSelected(selected, animated: animated)
-    }
+    private var URLAddress = ""
     
     func configure(with friend: Friend) {
         friendName.text = "\(friend.firstName) \(friend.lastName)"
-        friendImage.loadFrom(URLAddress: friend.photo)
+        URLAddress = friend.photo
+        updateUI()
+    }
+    
+    private func updateUI() {
+        guard let url = URL(string: URLAddress) else {
+            return
+        }
+        
+        DispatchQueue.global().async { [weak self] in
+            if let imageData = try? Data(contentsOf: url) {
+                if let loadedImage = UIImage(data: imageData) {
+                    DispatchQueue.main.async {
+                        if self?.URLAddress == url.absoluteString {
+                            self?.friendImage.image = loadedImage
+                        }
+                    }
+                }
+            }
+        }
     }
 }

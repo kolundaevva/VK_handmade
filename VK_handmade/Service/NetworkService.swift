@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import RealmSwift
 
 protocol NetworkServiceDescription {
     func getFriendList()
@@ -41,22 +42,22 @@ final class NetworkService: NetworkServiceDescription {
         guard let url = urlConstructor.url else { return }
         
         if UIApplication.shared.canOpenURL(url) {
-            DispatchQueue.main.async { [weak self] in
-                self?.session.dataTask(with: url) { data, response, error in
+                session.dataTask(with: url) { [weak self] data, response, error in
                     if let error = error {
                         print(error)
                         return
                     }
                     
-                    guard let data = data else { return }
-                    do {
-                        guard let friends = try self?.jsonDecoder.decode(VKUser.self, from: data).response.items else { return }
-                        self?.dataManager.saveFriends(friends)
-                    } catch {
-                        print(error.localizedDescription)
+                    DispatchQueue.global(qos: .userInitiated).async {
+                        guard let data = data else { return }
+                        do {
+                            guard let friends = try self?.jsonDecoder.decode(VKUser.self, from: data).response.items else { return }
+                            self?.dataManager.saveFriends(friends)
+                        } catch {
+                            print(error.localizedDescription)
+                        }
                     }
                 }.resume()
-            }
         } else {
             print("Error")
         }
@@ -75,23 +76,22 @@ final class NetworkService: NetworkServiceDescription {
         guard let url = urlConstructor.url else { return }
         
         if UIApplication.shared.canOpenURL(url) {
-            DispatchQueue.main.async { [weak self] in
-                self?.session.dataTask(with: url) { data, response, error in
+                session.dataTask(with: url) { [weak self] data, response, error in
                     if let error = error {
                         print(error)
                         return
                     }
                     
-                    guard let data = data else { return }
-                    
-                    do {
-                        guard let result = try self?.jsonDecoder.decode(VKPhoto.self, from: data).response.items else { return }
-                        self?.dataManager.saveUserPhotosData(result, pk: id)
-                    } catch {
-                        print(error.localizedDescription)
+                    DispatchQueue.global(qos: .userInitiated).async {
+                        guard let data = data else { return }
+                        do {
+                            guard let result = try self?.jsonDecoder.decode(VKPhoto.self, from: data).response.items else { return }
+                            self?.dataManager.saveUserPhotosData(result, pk: id)
+                        } catch {
+                            print(error.localizedDescription)
+                        }
                     }
                 }.resume()
-            }
         } else {
             print("Error")
         }
@@ -111,22 +111,22 @@ final class NetworkService: NetworkServiceDescription {
         guard let url = urlConstructor.url else { return }
         
         if UIApplication.shared.canOpenURL(url) {
-            DispatchQueue.main.async { [weak self] in
-                self?.session.dataTask(with: url) { data, response, error in
+                session.dataTask(with: url) { [weak self] data, response, error in
                     if let error = error {
                         print(error)
                         return
                     }
                     
-                    guard let data = data else { return }
-                    do {
-                        guard let result = try self?.jsonDecoder.decode(GroupData.self, from: data).response.items else { return }
-                        self?.dataManager.saveUserGroupsData(result)
-                    } catch {
-                        print(error.localizedDescription)
+                    DispatchQueue.global(qos: .userInitiated).async {
+                        guard let data = data else { return }
+                        do {
+                            guard let result = try self?.jsonDecoder.decode(GroupData.self, from: data).response.items else { return }
+                            self?.dataManager.saveUserGroupsData(result)
+                        } catch {
+                            print(error.localizedDescription)
+                        }
                     }
                 }.resume()
-            }
         } else {
             print("Error")
         }
@@ -145,13 +145,13 @@ final class NetworkService: NetworkServiceDescription {
         guard let url = urlConstructor.url else { return }
         
         if UIApplication.shared.canOpenURL(url) {
-            DispatchQueue.main.async { [weak self] in
-                self?.session.dataTask(with: url) { data, response, error in
+            session.dataTask(with: url) { [weak self] data, response, error in
                     if let error = error {
                         print(error)
                         return
                     }
                     
+                DispatchQueue.global(qos: .userInitiated).async {
                     guard let data = data else { return }
                     do {
                         guard let VKGroups = try self?.jsonDecoder.decode(GroupData.self, from: data).response.items else { return }
@@ -160,8 +160,8 @@ final class NetworkService: NetworkServiceDescription {
                     } catch {
                         print(error.localizedDescription)
                     }
+                }
                 }.resume()
-            }
         } else {
             print("Error")
         }
@@ -191,23 +191,24 @@ final class NetworkService: NetworkServiceDescription {
         guard let url = urlConstructor.url else { return }
         
         if UIApplication.shared.canOpenURL(url) {
-            DispatchQueue.main.async { [weak self] in
-                self?.session.dataTask(with: url) { data, response, error in
-                    if let error = error {
-                        print(error)
-                        return
-                    }
-                    
-//                    print(url)
+            session.dataTask(with: url) { [weak self] data, response, error in
+                if let error = error {
+                    print(error)
+                    return
+                }
+                
+                print(url)
+                
+                DispatchQueue.global(qos: .userInitiated).async {
                     guard let data = data else { return }
                     do {
                         let json = try? JSONSerialization.jsonObject(with: data, options: JSONSerialization.ReadingOptions.mutableContainers)
-//                        print(json)
+                        //                        print(json)
                     } catch {
                         print(error.localizedDescription)
                     }
-                }.resume()
-            }
+                }
+            }.resume()
         } else {
             print("Error")
         }

@@ -12,19 +12,29 @@ class GroupTableViewCell: UITableViewCell {
     @IBOutlet weak var groupName: UILabel!
     @IBOutlet weak var groupImage: UIImageView!
     
-    override func awakeFromNib() {
-        super.awakeFromNib()
-        // Initialization code
-    }
-
-    override func setSelected(_ selected: Bool, animated: Bool) {
-        super.setSelected(selected, animated: animated)
-
-        // Configure the view for the selected state
-    }
+    private var URLAddress = ""
     
     func configure(with group: Group) {
         groupName.text = group.name
-        groupImage.loadFrom(URLAddress: group.photo)
+        URLAddress = group.photo
+        updateUI()
+    }
+    
+    private func updateUI() {
+        guard let url = URL(string: URLAddress) else {
+            return
+        }
+        
+        DispatchQueue.global().async { [weak self] in
+            if let imageData = try? Data(contentsOf: url) {
+                if let loadedImage = UIImage(data: imageData) {
+                    DispatchQueue.main.async {
+                        if self?.URLAddress == url.absoluteString {
+                            self?.groupImage.image = loadedImage
+                        }
+                    }
+                }
+            }
+        }
     }
 }
