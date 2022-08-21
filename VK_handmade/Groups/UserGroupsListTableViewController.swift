@@ -27,10 +27,8 @@ class UserGroupsListTableViewController: UITableViewController {
         API.Client.shared.get(.getUserGroupsList) { (result: Result<API.Types.Response.VKGroupData, API.Types.Error>) in
             switch result {
             case .success(let success):
-                DispatchQueue.global(qos: .userInitiated).async { [weak self] in
-                    let grp = success.response.items
-                    self?.dataManager.saveUserGroupsData(grp)
-                }
+                let grp = success.response.items
+                self.dataManager.saveUserGroupsData(grp)
             case .failure(let failure):
                 let ac = UIAlertController(title: "Something goes wrong", message: failure.localizedDescription, preferredStyle: .alert)
                 ac.addAction(UIAlertAction(title: "OK", style: .default))

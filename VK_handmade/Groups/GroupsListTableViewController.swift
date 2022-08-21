@@ -21,16 +21,16 @@ class GroupsListTableViewController: UITableViewController {
         let nib = UINib(nibName: "GroupTableViewCell", bundle: nil)
         tableView.register(nib, forCellReuseIdentifier: "Group")
         
-        API.Client.shared.get(.searchGroups(name: "Music")) { (result: Result<API.Types.Response.VKGroupData, API.Types.Error>) in
+        API.Client.shared.get(.searchGroups(name: "Music")) { [self] (result: Result<API.Types.Response.VKGroupData, API.Types.Error>) in
             switch result {
             case .success(let success):
-                DispatchQueue.global(qos: .userInitiated).async { [weak self] in
+//                DispatchQueue.global(qos: .userInitiated).async { [weak self] in
                     let grp = success.response.items
-                    self?.groups = self?.convertData(grp) ?? []
+                    self.groups = convertData(grp) 
 
-                    DispatchQueue.main.async {
+                    DispatchQueue.main.async { [weak self] in
                         self?.tableView.reloadData()
-                    }
+//                    }
                 }
             case .failure(let failure):
                 let ac = UIAlertController(title: "Something goes wrong", message: failure.localizedDescription, preferredStyle: .alert)

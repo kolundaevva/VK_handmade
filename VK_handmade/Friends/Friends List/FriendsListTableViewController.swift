@@ -24,15 +24,12 @@ class FriendsListTableViewController: UITableViewController {
         tableView.register(nib, forCellReuseIdentifier: "Friend")
         
         Realm.Configuration.defaultConfiguration = Realm.Configuration(deleteRealmIfMigrationNeeded: true)
-//        network.getFriendList()
         
         API.Client.shared.get(.getFriendsList) { (result: Result<API.Types.Response.VKUser, API.Types.Error>) in
             switch result {
             case .success(let success):
-                DispatchQueue.global(qos: .userInitiated).async { [weak self] in
-                    let frd = success.response.items
-                    self?.dataManager.saveFriends(frd)
-                }
+                let frd = success.response.items
+                self.dataManager.saveFriends(frd)
             case .failure(let failure):
                 let ac = UIAlertController(title: "Something goes wrong", message: failure.localizedDescription, preferredStyle: .alert)
                 ac.addAction(UIAlertAction(title: "OK", style: .default))
