@@ -17,7 +17,7 @@ class Group: Object {
         "id"
     }
     
-    convenience init(group: VKGroup) {
+    convenience init(group: API.Types.Response.VKGroupData.Answer.VKGroup) {
         self.init()
         
         id = group.id

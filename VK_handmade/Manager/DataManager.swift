@@ -10,9 +10,9 @@ import RealmSwift
 
 protocol Manager {
     func saveUser(id: String)
-    func saveFriends(_ data: [VKFriend])
-    func saveUserPhotosData(_ data: [Item], pk: String)
-    func saveUserGroupsData(_ data: [VKGroup])
+    func saveFriends(_ data: [API.Types.Response.VKUser.Res.VKFriend])
+    func saveUserPhotosData(_ data: [API.Types.Response.VKPhoto.Res.Item], id: Int)
+    func saveUserGroupsData(_ data: [API.Types.Response.VKGroupData.Answer.VKGroup])
     func addGroup(_ group: Group)
 }
 
@@ -32,7 +32,7 @@ class DataManager: Manager {
         }
     }
     
-    func saveFriends(_ data: [VKFriend]) {
+    func saveFriends(_ data: [API.Types.Response.VKUser.Res.VKFriend]) {
         do {
             let realm = try Realm()
             guard let user = realm.object(ofType: User.self, forPrimaryKey: ApiKey.session.userId) else { return }
@@ -52,10 +52,10 @@ class DataManager: Manager {
         }
     }
     
-    func saveUserPhotosData(_ data: [Item], pk: String) {
+    func saveUserPhotosData(_ data: [API.Types.Response.VKPhoto.Res.Item], id: Int) {
         do {
             let realm = try Realm()
-            let id = Int(pk) ?? 0
+//            let id = Int(ApiKey.session.userId) ?? 0
             guard let user = realm.object(ofType: Friend.self, forPrimaryKey: id) else { return }
             let photos = data.map { Photo(photo: $0) }
             let oldPhotos = user.photos
@@ -69,7 +69,7 @@ class DataManager: Manager {
         }
     }
     
-    func saveUserGroupsData(_ data: [VKGroup]) {
+    func saveUserGroupsData(_ data: [API.Types.Response.VKGroupData.Answer.VKGroup]) {
         do {
             let realm = try Realm()
             guard let user = realm.object(ofType: User.self, forPrimaryKey: ApiKey.session.userId) else { return }

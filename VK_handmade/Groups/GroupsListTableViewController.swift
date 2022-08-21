@@ -21,10 +21,21 @@ class GroupsListTableViewController: UITableViewController {
         let nib = UINib(nibName: "GroupTableViewCell", bundle: nil)
         tableView.register(nib, forCellReuseIdentifier: "Group")
         
-        network.searchGroups(name: "Music") { [weak self] groups in
-            self?.groups = groups
-            DispatchQueue.main.async {
-                self?.tableView.reloadData()
+        API.Client.shared.get(.searchGroups(name: "Music")) { (result: Result<API.Types.Response.VKGroupData, API.Types.Error>) in
+            switch result {
+            case .success(let success):
+                DispatchQueue.global(qos: .userInitiated).async { [weak self] in
+                    let grp = success.response.items
+                    self?.groups = self?.convertData(grp) ?? []
+
+                    DispatchQueue.main.async {
+                        self?.tableView.reloadData()
+                    }
+                }
+            case .failure(let failure):
+                let ac = UIAlertController(title: "Something goes wrong", message: failure.localizedDescription, preferredStyle: .alert)
+                ac.addAction(UIAlertAction(title: "OK", style: .default))
+                self.present(ac, animated: true)
             }
         }
     }
@@ -47,7 +58,7 @@ class GroupsListTableViewController: UITableViewController {
         let ac = UIAlertController(title: "Groups", message: "Do you want to follow \(group.name)", preferredStyle: .alert)
         let follow = UIAlertAction(title: "Follow", style: .default) { [weak self] _ in
             self?.dataManager.addGroup(group)
-//            self?.network.joinGroup(id: group.id)
+            API.Client.shared.get(.joinGroup(id: group.id)) { (result: Result<API.Types.Response.VKGroupData, API.Types.Error>) in }
             self?.groups.remove(at: indexPath.row)
             self?.tableView.reloadData()
         }
@@ -55,5 +66,10 @@ class GroupsListTableViewController: UITableViewController {
         ac.addAction(follow)
         ac.addAction(cancel)
         present(ac, animated: true)
+    }
+    
+    //MARK: - Private Methods
+    private func convertData(_ data: [API.Types.Response.VKGroupData.Answer.VKGroup]) -> [Group] {
+        return data.map { Group(group: $0) }
     }
 }

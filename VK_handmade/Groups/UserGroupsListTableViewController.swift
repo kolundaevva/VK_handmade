@@ -23,8 +23,20 @@ class UserGroupsListTableViewController: UITableViewController {
         let nib = UINib(nibName: "GroupTableViewCell", bundle: nil)
         tableView.register(nib, forCellReuseIdentifier: "Group")
         
-        network.getUserGroupsList()
-        network.getNewsFeed()
+//        network.getNewsFeed()
+        API.Client.shared.get(.getUserGroupsList) { (result: Result<API.Types.Response.VKGroupData, API.Types.Error>) in
+            switch result {
+            case .success(let success):
+                DispatchQueue.global(qos: .userInitiated).async { [weak self] in
+                    let grp = success.response.items
+                    self?.dataManager.saveUserGroupsData(grp)
+                }
+            case .failure(let failure):
+                let ac = UIAlertController(title: "Something goes wrong", message: failure.localizedDescription, preferredStyle: .alert)
+                ac.addAction(UIAlertAction(title: "OK", style: .default))
+                self.present(ac, animated: true)
+            }
+        }
         pairTableAndRealm()
     }
     

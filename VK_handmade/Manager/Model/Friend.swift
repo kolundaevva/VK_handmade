@@ -19,7 +19,7 @@ class Friend: Object {
         "id"
     }
     
-    convenience init(user: VKFriend) {
+    convenience init(user: API.Types.Response.VKUser.Res.VKFriend) {
         self.init()
         
         id = user.id

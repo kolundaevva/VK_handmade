@@ -10,18 +10,12 @@ import RealmSwift
 
 class Photo: Object {
     @objc dynamic var id = 0
-//    @objc dynamic var ownerId = 0
     @objc dynamic var url = ""
     
-//    override class func primaryKey() -> String? {
-//        "id"
-//    }
-    
-    convenience init(photo: Item) {
+    convenience init(photo: API.Types.Response.VKPhoto.Res.Item) {
         self.init()
         
         id = photo.id
-//        ownerId = photo.ownerID
         guard let photoURL = photo.sizes.first?.url else {
             self.url = ""
             return

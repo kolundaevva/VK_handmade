@@ -11,7 +11,7 @@ import RealmSwift
 class FriendPhotoCollectionViewController: UICollectionViewController {
 
     private let network: NetworkServiceDescription = NetworkService()
-    private let dataManger: Manager = DataManager()
+    private let dataManager: Manager = DataManager()
     
     private var photos: List<Photo>!
     private var token: NotificationToken?
@@ -26,7 +26,22 @@ class FriendPhotoCollectionViewController: UICollectionViewController {
         
         let stringId = String(id)
         
-        network.getUserPhotos(id: stringId)
+//        network.getUserPhotos(id: stringId)
+        API.Client.shared.get(API.Types.Endpoint.getUserPhotos(id: stringId)) { (result: Result<API.Types.Response.VKPhoto, API.Types.Error>) in
+            switch result {
+            case .success(let success):
+                DispatchQueue.global(qos: .userInitiated).async { [weak self] in
+                    let phts = success.response.items
+                    print(phts.count)
+                    self?.dataManager.saveUserPhotosData(phts, id: self?.id ?? 0)
+                }
+            case .failure(let failure):
+                let ac = UIAlertController(title: "Something goes wrong", message: failure.localizedDescription, preferredStyle: .alert)
+                ac.addAction(UIAlertAction(title: "OK", style: .default))
+                self.present(ac, animated: true)
+            }
+        }
+        
         pairCollectionAndRealm()
     }
 
