@@ -10,7 +10,6 @@ import RealmSwift
 
 class FriendsListTableViewController: UITableViewController {
     
-    private let network: NetworkServiceDescription = NetworkService()
     private let dataManager: Manager = DataManager()
     
     private var friends: List<Friend>?

@@ -10,7 +10,6 @@ import RealmSwift
 
 class FriendPhotoCollectionViewController: UICollectionViewController {
 
-    private let network: NetworkServiceDescription = NetworkService()
     private let dataManager: Manager = DataManager()
     
     private var photos: List<Photo>!

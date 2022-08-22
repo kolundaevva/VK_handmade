@@ -10,7 +10,6 @@ import RealmSwift
 
 class UserGroupsListTableViewController: UITableViewController {
     
-    private let network: NetworkServiceDescription = NetworkService()
     private let dataManager: Manager = DataManager()
     
     private var groups: List<Group>?
