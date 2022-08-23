@@ -100,7 +100,60 @@ extension API {
                     }
                 }
             }
-
+            
+            //VK Post Model
+            
+            class VKPostData: Codable {
+                let response: Res
+                
+                class Res: Codable {
+                    let items: [VKPost]
+                    let groups: [VKGroupData.Answer.VKGroup]
+                    
+                    class VKPost: Codable {
+                        let sourceId: Int
+                        let date: Date
+                        let type: String
+                        let text: String
+                        let history: [History]?
+                        let attachments: [VKPostInfo]?
+                        
+                        class History: Codable {
+                            let id: Int
+                            let ownerId: Int
+                            let attachments: [VKPostInfo]
+                            
+                            enum CodingKeys: String, CodingKey {
+                                case id
+                                case ownerId = "owner_id"
+                                case attachments
+                            }
+                        }
+                        
+                        class VKPostInfo: Codable {
+                            let type: String
+                            let photo: VKPhoto.Res.Item?
+                            let audio: VKAudio?
+                            
+                            class VKAudio: Codable {
+                                let id: Int
+                                let artist: String
+                                let title: String
+                                let url: String
+                            }
+                        }
+                        
+                        enum CodingKeys: String, CodingKey {
+                            case sourceId = "source_id"
+                            case type = "post_type"
+                            case history = "copy_history"
+                            case date, text, attachments
+                        }
+                        
+                    }
+                }
+            }
+            
         }
         
         enum Request {
