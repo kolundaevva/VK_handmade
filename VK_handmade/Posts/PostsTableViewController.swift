@@ -12,11 +12,18 @@ class PostsTableViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        // Uncomment the following line to preserve selection between presentations
-        // self.clearsSelectionOnViewWillAppear = false
-
-        // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
-        // self.navigationItem.rightBarButtonItem = self.editButtonItem
+        API.Client.shared.get(.getNewsFeed) { (result: Result<API.Types.Response.VKPostData, API.Types.Error>) in
+            switch result {
+            case .success(let success):
+                let ac = UIAlertController(title: "All good", message: "\(success.response.items.count) elements", preferredStyle: .alert)
+                ac.addAction(UIAlertAction(title: "OK", style: .default))
+                self.present(ac, animated: true)
+            case .failure(let failure):
+                let ac = UIAlertController(title: "Something goes wrong", message: "\(failure.localizedDescription) \nWith posts", preferredStyle: .alert)
+                ac.addAction(UIAlertAction(title: "OK", style: .default))
+                self.present(ac, animated: true)
+            }
+        }
     }
 
     // MARK: - Table view data source

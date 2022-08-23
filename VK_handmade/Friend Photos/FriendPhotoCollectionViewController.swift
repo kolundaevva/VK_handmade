@@ -12,7 +12,7 @@ class FriendPhotoCollectionViewController: UICollectionViewController {
 
     private let dataManager: Manager = DataManager()
     
-    private var photos: List<Photo>!
+    private var photos: List<Photo>?
     private var token: NotificationToken?
     
     var id = 0
@@ -42,12 +42,12 @@ class FriendPhotoCollectionViewController: UICollectionViewController {
 
     // MARK: UICollectionViewDataSource
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return photos.count
+        return photos?.count ?? 0
     }
 
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "FriendPhoto", for: indexPath) as! PhotoCollectionViewCell
-        let photo = photos[indexPath.row]
+        guard let photo = photos?[indexPath.row] else { return UICollectionViewCell() }
         cell.configure(with: photo)
         return cell
     }
@@ -57,7 +57,7 @@ class FriendPhotoCollectionViewController: UICollectionViewController {
         guard let realm = try? Realm(), let user = realm.object(ofType: Friend.self, forPrimaryKey: id) else { return }
         photos = user.photos
         
-        token = photos.observe({ [weak self] changes in
+        token = photos?.observe({ [weak self] changes in
             guard let collectionView = self?.collectionView else { return }
             
             switch changes {
