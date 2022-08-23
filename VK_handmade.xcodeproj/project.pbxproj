@@ -18,7 +18,6 @@
 		472773DF2892D9910077ED0F /* GroupTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 472773DD2892D9910077ED0F /* GroupTableViewCell.swift */; };
 		472773E02892D9910077ED0F /* GroupTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 472773DE2892D9910077ED0F /* GroupTableViewCell.xib */; };
 		472773E828945D330077ED0F /* ApiKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 472773E728945D330077ED0F /* ApiKey.swift */; };
-		472773EA2894691E0077ED0F /* NetworkService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 472773E92894691E0077ED0F /* NetworkService.swift */; };
 		472773F92896E9340077ED0F /* Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 472773F82896E9340077ED0F /* Extension.swift */; };
 		472774022897EB610077ED0F /* DataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 472774012897EB610077ED0F /* DataManager.swift */; };
 		4727740528997AEB0077ED0F /* Friend.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4727740428997AEB0077ED0F /* Friend.swift */; };
@@ -52,7 +51,6 @@
 		472773DD2892D9910077ED0F /* GroupTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupTableViewCell.swift; sourceTree = "<group>"; };
 		472773DE2892D9910077ED0F /* GroupTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = GroupTableViewCell.xib; sourceTree = "<group>"; };
 		472773E728945D330077ED0F /* ApiKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApiKey.swift; sourceTree = "<group>"; };
-		472773E92894691E0077ED0F /* NetworkService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkService.swift; sourceTree = "<group>"; };
 		472773F82896E9340077ED0F /* Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extension.swift; sourceTree = "<group>"; };
 		472774012897EB610077ED0F /* DataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataManager.swift; sourceTree = "<group>"; };
 		4727740428997AEB0077ED0F /* Friend.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Friend.swift; sourceTree = "<group>"; };
@@ -169,7 +167,6 @@
 			isa = PBXGroup;
 			children = (
 				472773E728945D330077ED0F /* ApiKey.swift */,
-				472773E92894691E0077ED0F /* NetworkService.swift */,
 			);
 			path = Service;
 			sourceTree = "<group>";
@@ -396,7 +393,6 @@
 				475483E828B0EB3800F999A8 /* APITypes.swift in Sources */,
 				4727740528997AEB0077ED0F /* Friend.swift in Sources */,
 				472773E828945D330077ED0F /* ApiKey.swift in Sources */,
-				472773EA2894691E0077ED0F /* NetworkService.swift in Sources */,
 				47E7D51F2892C6980052DE8C /* SceneDelegate.swift in Sources */,
 				4727740E289D4CF00077ED0F /* User.swift in Sources */,
 				475483E428B0EAFE00F999A8 /* API.swift in Sources */,
