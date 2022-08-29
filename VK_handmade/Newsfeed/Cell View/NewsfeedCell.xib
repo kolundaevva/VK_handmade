@@ -40,12 +40,10 @@
                                 <nil key="highlightedColor"/>
                             </label>
                         </subviews>
-                        <color key="backgroundColor" systemColor="systemBlueColor"/>
                     </view>
-                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="f1E-5G-Dxn">
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="f1E-5G-Dxn">
                         <rect key="frame" x="0.0" y="48" width="320" height="120"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" systemColor="systemYellowColor"/>
                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                         <nil key="textColor"/>
                         <nil key="highlightedColor"/>
@@ -109,7 +107,6 @@
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                             </view>
                         </subviews>
-                        <color key="backgroundColor" systemColor="systemRedColor"/>
                     </view>
                 </subviews>
             </tableViewCellContentView>
@@ -119,7 +116,7 @@
                 <outlet property="dateLabel" destination="wXH-Eg-yeJ" id="s9r-ab-c8n"/>
                 <outlet property="iconImageView" destination="jcd-AM-brr" id="53G-C4-Zhb"/>
                 <outlet property="likesLabel" destination="Ajn-OA-9B5" id="DHV-Hv-mej"/>
-                <outlet property="nameLabel" destination="jcd-AM-brr" id="HIj-px-uJn"/>
+                <outlet property="nameLabel" destination="lft-UA-hV1" id="XNn-5G-Vwf"/>
                 <outlet property="postLabel" destination="f1E-5G-Dxn" id="OuS-hQ-6AD"/>
                 <outlet property="viewsLabel" destination="XQn-ju-Wxe" id="I7I-PQ-YTK"/>
             </connections>
@@ -132,15 +129,6 @@
         <image name="views_ico" width="20" height="20"/>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-        </systemColor>
-        <systemColor name="systemBlueColor">
-            <color red="0.0" green="0.47843137254901963" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-        </systemColor>
-        <systemColor name="systemRedColor">
-            <color red="1" green="0.23137254901960785" blue="0.18823529411764706" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-        </systemColor>
-        <systemColor name="systemYellowColor">
-            <color red="1" green="0.80000000000000004" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
     </resources>
 </document>

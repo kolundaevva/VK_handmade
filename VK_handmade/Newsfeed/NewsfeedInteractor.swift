@@ -21,6 +21,18 @@ class NewsfeedInteractor: NewsfeedBusinessLogic {
     if service == nil {
       service = NewsfeedService()
     }
+      
+      switch request {
+      case .getNewsFeed:
+          API.Client.shared.get(.getNewsFeed) { [weak self] (result: Result<API.Types.Response.VKPostData, API.Types.Error>) in
+              switch result {
+              case .success(let success):
+                  self?.presenter?.presentData(response: Newsfeed.Model.Response.ResponseType.presentNewsFeed(success: success))
+              case .failure(let failure):
+                  self?.presenter?.presentData(response: Newsfeed.Model.Response.ResponseType.presentError(error: failure))
+              }
+          }
+      }
   }
   
 }

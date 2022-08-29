@@ -9,23 +9,39 @@
 import UIKit
 
 enum Newsfeed {
-   
-  enum Model {
-    struct Request {
-      enum RequestType {
-        case some
-      }
+    
+    enum Model {
+        struct Request {
+            enum RequestType {
+                case getNewsFeed
+            }
+        }
+        struct Response {
+            enum ResponseType {
+                case presentNewsFeed(success: API.Types.Response.VKPostData)
+                case presentError(error: API.Types.Error)
+            }
+        }
+        struct ViewModel {
+            enum ViewModelData {
+                case displayNewsFeed(feed: FeedViewModel)
+                case showError(error: API.Types.Error)
+            }
+        }
     }
-    struct Response {
-      enum ResponseType {
-        case some
-      }
+    
+}
+
+struct FeedViewModel {
+    struct Cell: FeedCellViewModel {
+        var iconUrl: String
+        var name: String
+        var date: String
+        var text: String?
+        var likes: String?
+        var comments: String?
+        var views: String?
     }
-    struct ViewModel {
-      enum ViewModelData {
-        case some
-      }
-    }
-  }
-  
+    
+    var cells: [Cell]
 }

@@ -19,6 +19,8 @@ class NewsfeedViewController: UIViewController, NewsfeedDisplayLogic {
     var interactor: NewsfeedBusinessLogic?
     var router: (NSObjectProtocol & NewsfeedRoutingLogic)?
     
+    private var feedViewModel = FeedViewModel.init(cells: [])
+    
     // MARK: Setup
     
     private func setup() {
@@ -45,23 +47,32 @@ class NewsfeedViewController: UIViewController, NewsfeedDisplayLogic {
         
         let nib = UINib(nibName: "NewsfeedCell", bundle: nil)
         tableView.register(nib, forCellReuseIdentifier: "Post")
+        interactor?.makeRequest(request: Newsfeed.Model.Request.RequestType.getNewsFeed)
     }
     
     func displayData(viewModel: Newsfeed.Model.ViewModel.ViewModelData) {
-        
+        switch viewModel {
+        case .displayNewsFeed(feed: let feed):
+            self.feedViewModel = feed
+            self.tableView.reloadData()
+        case .showError(error: let error):
+            let ac = UIAlertController(title: "Something goes wrong", message: error.localizedDescription, preferredStyle: .alert)
+            ac.addAction(UIAlertAction(title: "OK", style: .default))
+            self.present(ac, animated: true)
+        }
     }
-    
 }
 
 extension NewsfeedViewController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 5
+        return feedViewModel.cells.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "Post", for: indexPath) as! NewsfeedCell
-        
+        let feed = feedViewModel.cells[indexPath.row]
+        cell.configure(with: feed)
         return cell
     }
     
