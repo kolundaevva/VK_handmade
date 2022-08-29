@@ -15,11 +15,18 @@ protocol NewsfeedPresentationLogic {
 class NewsfeedPresenter: NewsfeedPresentationLogic {
     weak var viewController: NewsfeedDisplayLogic?
     
+    private let dateFormatter: DateFormatter = {
+        let dt = DateFormatter()
+        dt.locale = Locale(identifier: "ru_RU")
+        dt.dateFormat = "d MMM 'в' HH:mm"
+        return dt
+    }()
+    
     func presentData(response: Newsfeed.Model.Response.ResponseType) {
         switch response {
         case .presentNewsFeed(success: let success):
             let cells = success.response.items.map { item in
-                cellViewModel(from: item)
+                cellViewModel(from: item, profiles: success.response.profiles, groups: success.response.groups)
             }
             
             let feedCells = FeedViewModel.init(cells: cells)
@@ -29,14 +36,24 @@ class NewsfeedPresenter: NewsfeedPresentationLogic {
         }
     }
     
-    private func cellViewModel(from item: API.Types.Response.VKPostData.FeedResponse.VKPost ) -> FeedViewModel.Cell {
-        let cell = FeedViewModel.Cell.init(iconUrl: "",
-                                           name: "test name",
-                                           date: "some date",
+    private func cellViewModel(from item: API.Types.Response.VKPostData.FeedResponse.VKPost, profiles: [API.Types.Response.VKUser.UserResponse.VKFriend], groups: [API.Types.Response.VKGroupData.GroupResponse.VKGroup]) -> FeedViewModel.Cell {
+        let profile = self.profile(for: item.sourceId, profiles: profiles, groups: groups)
+        let date = Date(timeIntervalSince1970: item.date)
+        let dateTitle = dateFormatter.string(from: date)
+        
+        return FeedViewModel.Cell.init(iconUrl: profile.photo,
+                                       name: profile.name,
+                                           date: dateTitle,
                                            text: item.text,
                                            likes: String(item.likes?.count ?? 0),
                                            comments: String(item.comments?.count ?? 0),
                                            views: String(item.views?.count ?? 0))
-        return cell
+    }
+    
+    private func profile(for sourceId: Int, profiles: [API.Types.Response.VKUser.UserResponse.VKFriend], groups: [API.Types.Response.VKGroupData.GroupResponse.VKGroup]) -> ProfileRepsentable {
+        let profilesOrGrpoups: [ProfileRepsentable] = sourceId >= 0 ? profiles : groups
+        let id = abs(sourceId)
+        let profileRepsentable = profilesOrGrpoups.first { $0.id == id }
+        return profileRepsentable!
     }
 }

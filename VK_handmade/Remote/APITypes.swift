@@ -7,6 +7,12 @@
 
 import Foundation
 
+protocol ProfileRepsentable {
+    var id: Int { get }
+    var name: String { get }
+    var photo: String { get }
+}
+
 extension API {
     enum Types {
         enum Response {
@@ -27,10 +33,11 @@ extension API {
                         self.items = items
                     }
                     
-                    class VKFriend: Codable {
+                    class VKFriend: Codable, ProfileRepsentable {
                         let id: Int
                         let photo: String
                         let firstName, lastName: String
+                        var name: String { firstName + " " + lastName }
                         
                         enum CodingKeys: String, CodingKey {
                             case id
@@ -56,7 +63,7 @@ extension API {
                 class GroupResponse: Codable {
                     let items: [VKGroup]
                     
-                    class VKGroup: Codable {
+                    class VKGroup: Codable, ProfileRepsentable {
                         let id: Int
                         let name: String
                         let photo: String
