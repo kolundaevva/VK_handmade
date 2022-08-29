@@ -92,35 +92,6 @@
             </objects>
             <point key="canvasLocation" x="3633" y="65"/>
         </scene>
-        <!--Table View Controller-->
-        <scene sceneID="a4R-BG-VVv">
-            <objects>
-                <tableViewController id="xoj-c8-W8m" sceneMemberID="viewController">
-                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" id="abd-VK-RIJ">
-                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
-                        <prototypes>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" id="az0-K1-zx1">
-                                <rect key="frame" x="0.0" y="44.5" width="414" height="43.5"/>
-                                <autoresizingMask key="autoresizingMask"/>
-                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="az0-K1-zx1" id="NWB-Yd-BpN">
-                                    <rect key="frame" x="0.0" y="0.0" width="414" height="43.5"/>
-                                    <autoresizingMask key="autoresizingMask"/>
-                                </tableViewCellContentView>
-                            </tableViewCell>
-                        </prototypes>
-                        <connections>
-                            <outlet property="dataSource" destination="xoj-c8-W8m" id="Rrk-uT-PhD"/>
-                            <outlet property="delegate" destination="xoj-c8-W8m" id="0Is-6o-tab"/>
-                        </connections>
-                    </tableView>
-                    <navigationItem key="navigationItem" id="kk2-Be-JNA"/>
-                </tableViewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="dmA-q5-KMn" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="3632" y="807"/>
-        </scene>
         <!--Groups List Table View Controller-->
         <scene sceneID="K9a-Pv-nse">
             <objects>
@@ -257,12 +228,22 @@
                     </navigationBar>
                     <nil name="viewControllers"/>
                     <connections>
-                        <segue destination="xoj-c8-W8m" kind="relationship" relationship="rootViewController" id="fSY-Rs-mbw"/>
+                        <segue destination="rlU-28-MHl" kind="relationship" relationship="rootViewController" id="WNR-at-JA9"/>
                     </connections>
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="xx2-mS-soN" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="2725" y="807"/>
+        </scene>
+        <!--Newsfeed-->
+        <scene sceneID="kdK-A6-3uJ">
+            <objects>
+                <viewControllerPlaceholder storyboardIdentifier="Newsfeed" storyboardName="Newsfeed" id="rlU-28-MHl" sceneMemberID="viewController">
+                    <navigationItem key="navigationItem" id="OMD-Yt-vSS"/>
+                </viewControllerPlaceholder>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="n5e-hm-f7l" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="3633" y="807"/>
         </scene>
     </scenes>
     <resources>
