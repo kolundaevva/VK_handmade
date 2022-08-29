@@ -10,9 +10,9 @@ import RealmSwift
 
 protocol Manager {
     func saveUser(id: String)
-    func saveFriends(_ data: [API.Types.Response.VKUser.Res.VKFriend])
+    func saveFriends(_ data: [API.Types.Response.VKUser.UserResponse.VKFriend])
     func saveUserPhotosData(_ data: [API.Types.Response.VKPhoto.Res.Item], id: Int)
-    func saveUserGroupsData(_ data: [API.Types.Response.VKGroupData.Answer.VKGroup])
+    func saveUserGroupsData(_ data: [API.Types.Response.VKGroupData.GroupResponse.VKGroup])
     func addGroup(_ group: Group)
 }
 
@@ -32,7 +32,7 @@ class DataManager: Manager {
         }
     }
     
-    func saveFriends(_ data: [API.Types.Response.VKUser.Res.VKFriend]) {
+    func saveFriends(_ data: [API.Types.Response.VKUser.UserResponse.VKFriend]) {
         do {
             let realm = try Realm()
             guard let user = realm.object(ofType: User.self, forPrimaryKey: ApiKey.session.userId) else { return }
@@ -69,7 +69,7 @@ class DataManager: Manager {
         }
     }
     
-    func saveUserGroupsData(_ data: [API.Types.Response.VKGroupData.Answer.VKGroup]) {
+    func saveUserGroupsData(_ data: [API.Types.Response.VKGroupData.GroupResponse.VKGroup]) {
         do {
             let realm = try Realm()
             guard let user = realm.object(ofType: User.self, forPrimaryKey: ApiKey.session.userId) else { return }

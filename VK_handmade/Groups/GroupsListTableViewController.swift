@@ -103,7 +103,7 @@ class GroupsListTableViewController: UITableViewController {
     }
     
     //MARK: - Private Methods
-    private func convertData(_ data: [API.Types.Response.VKGroupData.Answer.VKGroup]) -> [Group] {
+    private func convertData(_ data: [API.Types.Response.VKGroupData.GroupResponse.VKGroup]) -> [Group] {
         return data.map { Group(group: $0) }
     }
 }

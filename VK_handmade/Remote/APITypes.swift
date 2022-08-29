@@ -14,13 +14,13 @@ extension API {
             
             //VK User model
             class VKUser: Codable {
-                let response: Res
+                let response: UserResponse
                 
-                init(response: Res) {
+                init(response: UserResponse) {
                     self.response = response
                 }
                 
-                class Res: Codable {
+                class UserResponse: Codable {
                     let items: [VKFriend]
                     
                     init(items: [VKFriend]) {
@@ -51,9 +51,9 @@ extension API {
             
             //VK Group model
             class VKGroupData: Codable {
-                let response: Answer
+                let response: GroupResponse
                 
-                class Answer: Codable {
+                class GroupResponse: Codable {
                     let items: [VKGroup]
                     
                     class VKGroup: Codable {
@@ -83,7 +83,29 @@ extension API {
                     class Item: Codable {
                         let id, ownerID: Int
                         let sizes: [Size]
-
+                        
+                        var height: Int {
+                            return getPropperSize().height
+                        }
+                        
+                        var width: Int {
+                            return getPropperSize().width
+                        }
+                        
+                        var srcBIG: String {
+                            return getPropperSize().url
+                        }
+                        
+                        private func getPropperSize() -> Size {
+                            if let sizeX = sizes.first(where: { $0.type == "x" }) {
+                                return sizeX
+                            } else if let fallBackSize = sizes.last {
+                                return fallBackSize
+                            } else {
+                                return Size(height: 0, width: 0, url: "", type: "wrong image")
+                            }
+                        }
+                        
                         enum CodingKeys: String, CodingKey {
                             case id
                             case ownerID = "owner_id"
@@ -92,10 +114,16 @@ extension API {
                         
                         class Size: Codable {
                             let height: Int
+                            let width: Int
                             let url: String
                             let type: String
-                            let width: Int
-
+                            
+                            init(height: Int, width: Int, url: String, type: String) {
+                                self.height = height
+                                self.width = width
+                                self.url = url
+                                self.type = type
+                            }
                         }
                     }
                 }
@@ -104,50 +132,40 @@ extension API {
             //VK Post Model
             
             class VKPostData: Codable {
-                let response: Res
+                let response: FeedResponse
                 
-                class Res: Codable {
+                class FeedResponse: Codable {
                     let items: [VKPost]
-                    let groups: [VKGroupData.Answer.VKGroup]
+                    let groups: [VKGroupData.GroupResponse.VKGroup]
+                    let profiles: [VKUser.UserResponse.VKFriend]
+                    let nextFrom: String?
                     
                     class VKPost: Codable {
                         let sourceId: Int
-                        let date: Date
+                        let postId: Int
+                        let date: Double
                         let type: String
-                        let text: String
-                        let history: [History]?
-                        let attachments: [VKPostInfo]?
+                        let text: String?
+                        let attachments: [Attechment]?
+                        let comments: CountableItem?
+                        let likes: CountableItem?
+                        let views: CountableItem?
                         
-                        class History: Codable {
-                            let id: Int
-                            let ownerId: Int
-                            let attachments: [VKPostInfo]
-                            
-                            enum CodingKeys: String, CodingKey {
-                                case id
-                                case ownerId = "owner_id"
-                                case attachments
-                            }
-                        }
-                        
-                        class VKPostInfo: Codable {
+                        class Attechment: Codable {
                             let type: String
                             let photo: VKPhoto.Res.Item?
-                            let audio: VKAudio?
-                            
-                            class VKAudio: Codable {
-                                let id: Int
-                                let artist: String
-                                let title: String
-                                let url: String
-                            }
+                        }
+                        
+                        class CountableItem: Codable {
+                            let count: Int
                         }
                         
                         enum CodingKeys: String, CodingKey {
                             case sourceId = "source_id"
+                            case postId = "post_id"
                             case type = "post_type"
-                            case history = "copy_history"
                             case date, text, attachments
+                            case comments, likes, views
                         }
                         
                     }

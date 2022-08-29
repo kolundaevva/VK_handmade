@@ -35,7 +35,7 @@ extension API {
                     callback?(.failure(.generic(reason: "Could not fetch data: \(error.localizedDescription)")))
                 } else {
                     if let data = data {
-                        DispatchQueue.global(qos: .userInitiated).async {
+                        DispatchQueue.main.async {
                             do {
                                 let result = try self.decoder.decode(Response.self, from: data)
                                 callback?(.success(result))
