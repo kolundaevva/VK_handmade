@@ -35,13 +35,17 @@ extension API {
                     callback?(.failure(.generic(reason: "Could not fetch data: \(error.localizedDescription)")))
                 } else {
                     if let data = data {
-                        DispatchQueue.main.async {
+                        DispatchQueue.global(qos: .userInteractive).async {
                             do {
                                 let result = try self.decoder.decode(Response.self, from: data)
-                                callback?(.success(result))
+                                DispatchQueue.main.async {
+                                    callback?(.success(result))
+                                }
                             } catch {
                                 print("Decoding error: \(error)")
-                                callback?(.failure(.generic(reason: "Could not decode data: \(error.localizedDescription)")))
+                                DispatchQueue.main.async {
+                                    callback?(.failure(.generic(reason: "Could not decode data: \(error.localizedDescription)")))
+                                }
                             }
                         }
                     }

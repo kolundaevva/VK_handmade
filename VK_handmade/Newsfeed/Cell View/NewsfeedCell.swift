@@ -26,6 +26,7 @@ protocol FeedCellAttechmentViewModel {
 
 class NewsfeedCell: UITableViewCell {
 
+    @IBOutlet weak var feedView: UIView!
     @IBOutlet weak var iconImageView: WebImageView!
     @IBOutlet weak var nameLabel: UILabel!
     @IBOutlet weak var dateLabel: UILabel!
@@ -40,6 +41,13 @@ class NewsfeedCell: UITableViewCell {
         
         iconImageView.layer.cornerRadius = iconImageView.frame.height / 2
         iconImageView.clipsToBounds = true
+        
+        feedView.layer.cornerRadius = 10
+        feedView.clipsToBounds = true
+        feedView.backgroundColor = .white
+        
+        backgroundColor = .clear
+        selectionStyle = .none
     }
     
     func configure(with feed: FeedCellViewModel) {
