@@ -41,6 +41,13 @@ struct FeedViewModel {
         var likes: String?
         var comments: String?
         var views: String?
+        var attechment: FeedCellAttechmentViewModel?
+    }
+    
+    struct FeedCellPhotoAttechment: FeedCellAttechmentViewModel {
+        var photoUrlString: String
+        var height: Int
+        var width: Int
     }
     
     var cells: [Cell]

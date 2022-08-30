@@ -159,7 +159,6 @@ extension API {
                         let views: CountableItem?
                         
                         class Attechment: Codable {
-                            let type: String
                             let photo: VKPhoto.Res.Item?
                         }
                         
