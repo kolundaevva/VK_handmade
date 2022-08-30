@@ -9,30 +9,10 @@ import UIKit
 
 class PhotoCollectionViewCell: UICollectionViewCell {
 
-    @IBOutlet weak var photoView: UIImageView!
-    private var URLAddress = ""
+    @IBOutlet weak var photoView: WebImageView!
 
     func configure(with photo: Photo) {
-        URLAddress = photo.url
-        updateUI()
-    }
-    
-    private func updateUI() {
-        guard let url = URL(string: URLAddress) else {
-            return
-        }
-        
-        DispatchQueue.global().async { [weak self] in
-            if let imageData = try? Data(contentsOf: url) {
-                if let loadedImage = UIImage(data: imageData) {
-                    DispatchQueue.main.async {
-                        if self?.URLAddress == url.absoluteString {
-                            self?.photoView.image = loadedImage
-                        }
-                    }
-                }
-            }
-        }
+        photoView.set(url: photo.url)
     }
 }
 

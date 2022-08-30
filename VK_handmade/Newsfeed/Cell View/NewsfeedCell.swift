@@ -19,7 +19,7 @@ protocol FeedCellViewModel {
 
 class NewsfeedCell: UITableViewCell {
 
-    @IBOutlet weak var iconImageView: UIImageView!
+    @IBOutlet weak var iconImageView: WebImageView!
     @IBOutlet weak var nameLabel: UILabel!
     @IBOutlet weak var dateLabel: UILabel!
     @IBOutlet weak var postLabel: UILabel!
@@ -32,6 +32,7 @@ class NewsfeedCell: UITableViewCell {
     }
     
     func configure(with feed: FeedCellViewModel) {
+        iconImageView.set(url: feed.iconUrl)
         nameLabel.text = feed.name
         dateLabel.text = feed.date
         postLabel.text = feed.text

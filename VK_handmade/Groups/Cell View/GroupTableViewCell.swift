@@ -10,31 +10,10 @@ import UIKit
 class GroupTableViewCell: UITableViewCell {
 
     @IBOutlet weak var groupName: UILabel!
-    @IBOutlet weak var groupImage: UIImageView!
-    
-    private var URLAddress = ""
+    @IBOutlet weak var groupImage: WebImageView!
     
     func configure(with group: Group) {
         groupName.text = group.name
-        URLAddress = group.photo
-        updateUI()
-    }
-    
-    private func updateUI() {
-        guard let url = URL(string: URLAddress) else {
-            return
-        }
-        
-        DispatchQueue.global().async { [weak self] in
-            if let imageData = try? Data(contentsOf: url) {
-                if let loadedImage = UIImage(data: imageData) {
-                    DispatchQueue.main.async {
-                        if self?.URLAddress == url.absoluteString {
-                            self?.groupImage.image = loadedImage
-                        }
-                    }
-                }
-            }
-        }
+        groupImage.set(url: group.photo)
     }
 }
