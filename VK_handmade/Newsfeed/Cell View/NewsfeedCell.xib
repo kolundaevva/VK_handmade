@@ -18,7 +18,7 @@
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="BbR-iF-Uj6" userLabel="Feed">
-                        <rect key="frame" x="16" y="0.0" width="288" height="218"/>
+                        <rect key="frame" x="16" y="0.0" width="288" height="214"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="lku-Gd-lq6" userLabel="Top View">
@@ -46,18 +46,18 @@
                                 </subviews>
                             </view>
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="0Ux-3n-2Df" customClass="WebImageView" customModule="VK_handmade" customModuleProvider="target">
-                                <rect key="frame" x="0.0" y="120" width="295" height="46"/>
+                                <rect key="frame" x="0.0" y="116" width="288" height="46"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                             </imageView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="f1E-5G-Dxn">
-                                <rect key="frame" x="8" y="41" width="272" height="71"/>
-                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <rect key="frame" x="8" y="48" width="272" height="60"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="15"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Uqb-aJ-See" userLabel="Bottom View">
-                                <rect key="frame" x="0.0" y="174" width="288" height="44"/>
+                                <rect key="frame" x="0.0" y="170" width="288" height="44"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                 <subviews>
                                     <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="nfr-Jc-xRZ">
@@ -122,6 +122,7 @@
             </tableViewCellContentView>
             <viewLayoutGuide key="safeArea" id="njF-e1-oar"/>
             <connections>
+                <outlet property="bottomView" destination="Uqb-aJ-See" id="sQp-DA-gB4"/>
                 <outlet property="commentsLabel" destination="7Pe-rr-fwW" id="wnS-zB-kMr"/>
                 <outlet property="dateLabel" destination="wXH-Eg-yeJ" id="s9r-ab-c8n"/>
                 <outlet property="feedView" destination="BbR-iF-Uj6" id="WL6-DA-IEF"/>

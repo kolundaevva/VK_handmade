@@ -15,6 +15,7 @@ protocol NewsfeedPresentationLogic {
 class NewsfeedPresenter: NewsfeedPresentationLogic {
     weak var viewController: NewsfeedDisplayLogic?
     
+    let cellLayoutCalculator: NewsfeedCellLayoutCalculatorProtocol = NewsfeedCellLayoutCalculator()
     private let dateFormatter: DateFormatter = {
         let dt = DateFormatter()
         dt.locale = Locale(identifier: "ru_RU")
@@ -37,10 +38,12 @@ class NewsfeedPresenter: NewsfeedPresentationLogic {
     }
     
     private func cellViewModel(from item: API.Types.Response.VKPostData.FeedResponse.VKPost, profiles: [API.Types.Response.VKUser.UserResponse.VKFriend], groups: [API.Types.Response.VKGroupData.GroupResponse.VKGroup]) -> FeedViewModel.Cell {
+        
         let profile = self.profile(for: item.sourceId, profiles: profiles, groups: groups)
         let photoAttechment = self.photoAttechment(feed: item)
         let date = Date(timeIntervalSince1970: item.date)
         let dateTitle = dateFormatter.string(from: date)
+        let sizes = cellLayoutCalculator.sizes(postText: item.text, attechment: photoAttechment)
         
         return FeedViewModel.Cell.init(iconUrl: profile.photo,
                                        name: profile.name,
@@ -49,7 +52,8 @@ class NewsfeedPresenter: NewsfeedPresentationLogic {
                                        likes: String(item.likes?.count ?? 0),
                                        comments: String(item.comments?.count ?? 0),
                                        views: String(item.views?.count ?? 0),
-                                       attechment: photoAttechment)
+                                       attechment: photoAttechment,
+                                       sizes: sizes)
     }
     
     private func profile(for sourceId: Int, profiles: [API.Types.Response.VKUser.UserResponse.VKFriend], groups: [API.Types.Response.VKGroupData.GroupResponse.VKGroup]) -> ProfileRepsentable {
