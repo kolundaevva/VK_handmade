@@ -28,7 +28,7 @@ protocol FeedCellAttechmentViewModel {
 protocol FeedCellSizes {
     var postLabelFrame: CGRect { get }
     var attechmentFrame: CGRect { get }
-    var bottomView: CGRect { get }
+    var bottomViewFrame: CGRect { get }
     var totalHeight: CGFloat { get }
 }
 
@@ -45,6 +45,11 @@ class NewsfeedCell: UITableViewCell {
     @IBOutlet weak var viewsLabel: UILabel!
     @IBOutlet weak var bottomView: UIView!
     
+    override func prepareForReuse() {
+        iconImageView.set(url: nil)
+        postImageView.set(url: nil)
+    }
+    
     override func awakeFromNib() {
         super.awakeFromNib()
         
@@ -54,6 +59,8 @@ class NewsfeedCell: UITableViewCell {
         feedView.layer.cornerRadius = 10
         feedView.clipsToBounds = true
         feedView.backgroundColor = .white
+        
+        bottomView.backgroundColor = .white
         
         backgroundColor = .clear
         selectionStyle = .none
@@ -70,6 +77,7 @@ class NewsfeedCell: UITableViewCell {
         
         postLabel.frame = feed.sizes.postLabelFrame
         postImageView.frame = feed.sizes.attechmentFrame
+        bottomView.frame = feed.sizes.bottomViewFrame
         
         if let photoAttechment = feed.attechment {
             postImageView.set(url: photoAttechment.photoUrlString)

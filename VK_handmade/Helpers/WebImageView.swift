@@ -9,8 +9,10 @@ import Foundation
 import UIKit
 
 class WebImageView: UIImageView {
-    func set(url: String) {
-        guard let imageURL = URL(string: url) else { return }
+    func set(url: String?) {
+        guard let url = url, let imageURL = URL(string: url) else {
+            self.image = nil
+            return }
         
         if let cachedResponse = URLCache.shared.cachedResponse(for: URLRequest(url: imageURL)) {
             self.image = UIImage(data: cachedResponse.data)

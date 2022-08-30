@@ -11,13 +11,14 @@ import UIKit
 fileprivate struct Sizes: FeedCellSizes {
     var postLabelFrame: CGRect
     var attechmentFrame: CGRect
-    var bottomView: CGRect
+    var bottomViewFrame: CGRect
     var totalHeight: CGFloat
 }
 
 fileprivate struct Constans {
     static let feedInsets = UIEdgeInsets(top: 0, left: 16, bottom: 15, right: 16)
     static let topHeight: CGFloat = 40
+    static let bottomHeight: CGFloat = 44
     static let postLabelInsets = UIEdgeInsets(top: topHeight + 8, left: 8, bottom: 8, right: 8)
     static let labelFont = UIFont.systemFont(ofSize: 15)
 }
@@ -38,7 +39,7 @@ final class NewsfeedCellLayoutCalculator: NewsfeedCellLayoutCalculatorProtocol {
         
         let feedWidth = screenWidth - Constans.feedInsets.left - Constans.feedInsets.right
         
-        //MARK: - Calculate post height
+        //MARK: - Calculate post text height
         var postLabelFrame = CGRect(origin: CGPoint(x: Constans.postLabelInsets.left, y: Constans.postLabelInsets.top), size: CGSize.zero)
         
         if let postText = postText, !postText.isEmpty {
@@ -48,6 +49,25 @@ final class NewsfeedCellLayoutCalculator: NewsfeedCellLayoutCalculatorProtocol {
             postLabelFrame.size = CGSize(width: width, height: height)
         }
         
-        return Sizes(postLabelFrame: postLabelFrame, attechmentFrame: CGRect.zero, bottomView: CGRect.zero, totalHeight: 300)
+        //MARK: - Calculate post image height
+        let postImageTop = postLabelFrame.size == CGSize.zero ? Constans.postLabelInsets.top : postLabelFrame.maxY + Constans.postLabelInsets.bottom
+        var postImageFrame = CGRect(origin: CGPoint(x: 0, y:  postImageTop), size: CGSize.zero)
+        
+        if let attechment = attechment {
+            let photoHeight = Float(attechment.height)
+            let photoWidth = Float(attechment.width)
+            let ration = CGFloat(photoHeight / photoWidth)
+            
+            postImageFrame.size = CGSize(width: feedWidth, height: feedWidth * ration)
+        }
+        
+        //MARK: - Calculate post bottomView height
+        let bottomViewTop = max(postLabelFrame.maxY, postImageFrame.maxY)
+        let bottomViewFrame = CGRect(origin: CGPoint(x: 0, y: bottomViewTop), size: CGSize(width: feedWidth, height: Constans.bottomHeight))
+        
+        //MARK: - Calculate total height
+        let totalHeight = bottomViewFrame.maxY + Constans.feedInsets.bottom
+        
+        return Sizes(postLabelFrame: postLabelFrame, attechmentFrame: postImageFrame, bottomViewFrame: bottomViewFrame, totalHeight: totalHeight)
     }
 }
