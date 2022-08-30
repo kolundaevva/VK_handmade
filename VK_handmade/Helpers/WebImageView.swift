@@ -14,6 +14,7 @@ class WebImageView: UIImageView {
         
         if let cachedResponse = URLCache.shared.cachedResponse(for: URLRequest(url: imageURL)) {
             self.image = UIImage(data: cachedResponse.data)
+            return
         }
         
         let task = URLSession.shared.dataTask(with: imageURL) { [weak self] data, response, error in
