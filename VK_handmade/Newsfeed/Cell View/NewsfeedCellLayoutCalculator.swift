@@ -15,14 +15,6 @@ fileprivate struct Sizes: FeedCellSizes {
     var totalHeight: CGFloat
 }
 
-fileprivate struct Constans {
-    static let feedInsets = UIEdgeInsets(top: 0, left: 16, bottom: 15, right: 16)
-    static let topHeight: CGFloat = 40
-    static let bottomHeight: CGFloat = 44
-    static let postLabelInsets = UIEdgeInsets(top: topHeight + 8, left: 8, bottom: 8, right: 8)
-    static let labelFont = UIFont.systemFont(ofSize: 15)
-}
-
 protocol NewsfeedCellLayoutCalculatorProtocol {
     func sizes(postText: String?, attechment: FeedCellAttechmentViewModel?) -> FeedCellSizes
 }

@@ -45,8 +45,9 @@ class NewsfeedViewController: UIViewController, NewsfeedDisplayLogic {
         super.viewDidLoad()
         setup()
         
-        let nib = UINib(nibName: "NewsfeedCell", bundle: nil)
-        tableView.register(nib, forCellReuseIdentifier: "Post")
+//        let nib = UINib(nibName: "NewsfeedCell", bundle: nil)
+//        tableView.register(nib, forCellReuseIdentifier: "Post")
+        tableView.register(NewsfeedCellCode.self, forCellReuseIdentifier: "Post")
         
         tableView.separatorStyle = .none
         tableView.backgroundColor = .clear
@@ -75,9 +76,11 @@ extension NewsfeedViewController: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "Post", for: indexPath) as! NewsfeedCell
+//        let cell = tableView.dequeueReusableCell(withIdentifier: "Post", for: indexPath) as! NewsfeedCell
+        let cell = tableView.dequeueReusableCell(withIdentifier: "Post", for: indexPath) as! NewsfeedCellCode
         let feed = feedViewModel.cells[indexPath.row]
         cell.configure(with: feed)
+        
         return cell
     }
     
