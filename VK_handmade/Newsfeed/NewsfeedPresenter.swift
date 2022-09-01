@@ -25,9 +25,9 @@ class NewsfeedPresenter: NewsfeedPresentationLogic {
     
     func presentData(response: Newsfeed.Model.Response.ResponseType) {
         switch response {
-        case .presentNewsFeed(success: let success):
+        case .presentNewsFeed(success: let success, postIds: let postIds):
             let cells = success.response.items.map { item in
-                cellViewModel(from: item, profiles: success.response.profiles, groups: success.response.groups)
+                cellViewModel(from: item, profiles: success.response.profiles, groups: success.response.groups, postIds: postIds)
             }
             
             let feedCells = FeedViewModel.init(cells: cells)
@@ -37,15 +37,17 @@ class NewsfeedPresenter: NewsfeedPresentationLogic {
         }
     }
     
-    private func cellViewModel(from item: API.Types.Response.VKPostData.FeedResponse.VKPost, profiles: [API.Types.Response.VKUser.UserResponse.VKFriend], groups: [API.Types.Response.VKGroupData.GroupResponse.VKGroup]) -> FeedViewModel.Cell {
+    private func cellViewModel(from item: API.Types.Response.VKPostData.FeedResponse.VKPost, profiles: [API.Types.Response.VKUser.UserResponse.VKFriend], groups: [API.Types.Response.VKGroupData.GroupResponse.VKGroup], postIds: [Int]) -> FeedViewModel.Cell {
         
         let profile = self.profile(for: item.sourceId, profiles: profiles, groups: groups)
         let photoAttechment = self.photoAttechment(feed: item)
         let date = Date(timeIntervalSince1970: item.date)
         let dateTitle = dateFormatter.string(from: date)
-        let sizes = cellLayoutCalculator.sizes(postText: item.text, attechment: photoAttechment)
+        let isFullSize = postIds.contains(item.postId)
+        let sizes = cellLayoutCalculator.sizes(postText: item.text, attechment: photoAttechment, isFullSize: isFullSize)
         
-        return FeedViewModel.Cell.init(iconUrl: profile.photo,
+        return FeedViewModel.Cell.init(postId: item.postId,
+                                       iconUrl: profile.photo,
                                        name: profile.name,
                                        date: dateTitle,
                                        text: item.text,

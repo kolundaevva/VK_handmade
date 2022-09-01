@@ -14,11 +14,12 @@ enum Newsfeed {
         struct Request {
             enum RequestType {
                 case getNewsFeed
+                case revealPostIds(postId: Int)
             }
         }
         struct Response {
             enum ResponseType {
-                case presentNewsFeed(success: API.Types.Response.VKPostData)
+                case presentNewsFeed(success: API.Types.Response.VKPostData, postIds: [Int])
                 case presentError(error: API.Types.Error)
             }
         }
@@ -34,6 +35,7 @@ enum Newsfeed {
 
 struct FeedViewModel {
     struct Cell: FeedCellViewModel {
+        var postId: Int
         var iconUrl: String
         var name: String
         var date: String

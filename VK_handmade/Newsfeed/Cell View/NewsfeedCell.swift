@@ -29,6 +29,7 @@ protocol FeedCellSizes {
     var postLabelFrame: CGRect { get }
     var attechmentFrame: CGRect { get }
     var bottomViewFrame: CGRect { get }
+    var moreTextButtonFrame: CGRect { get }
     var totalHeight: CGFloat { get }
 }
 
@@ -44,6 +45,7 @@ class NewsfeedCell: UITableViewCell {
     @IBOutlet weak var commentsLabel: UILabel!
     @IBOutlet weak var viewsLabel: UILabel!
     @IBOutlet weak var bottomView: UIView!
+    @IBOutlet weak var moreTextButton: UIButton!
     
     override func prepareForReuse() {
         iconImageView.set(url: nil)
@@ -62,8 +64,14 @@ class NewsfeedCell: UITableViewCell {
         
         bottomView.backgroundColor = .white
         
+        moreTextButton.addTarget(self, action: #selector(printSmth), for: .allTouchEvents)
+        
         backgroundColor = .clear
         selectionStyle = .none
+    }
+    
+    @objc func printSmth() {
+        print("OOOOOOK")
     }
     
     func configure(with feed: FeedCellViewModel) {
@@ -78,6 +86,7 @@ class NewsfeedCell: UITableViewCell {
         postLabel.frame = feed.sizes.postLabelFrame
         postImageView.frame = feed.sizes.attechmentFrame
         bottomView.frame = feed.sizes.bottomViewFrame
+        moreTextButton.frame = feed.sizes.moreTextButtonFrame
         
         if let photoAttechment = feed.attechment {
             postImageView.set(url: photoAttechment.photoUrlString)

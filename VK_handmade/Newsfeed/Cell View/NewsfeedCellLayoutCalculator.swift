@@ -12,11 +12,12 @@ fileprivate struct Sizes: FeedCellSizes {
     var postLabelFrame: CGRect
     var attechmentFrame: CGRect
     var bottomViewFrame: CGRect
+    var moreTextButtonFrame: CGRect
     var totalHeight: CGFloat
 }
 
 protocol NewsfeedCellLayoutCalculatorProtocol {
-    func sizes(postText: String?, attechment: FeedCellAttechmentViewModel?) -> FeedCellSizes
+    func sizes(postText: String?, attechment: FeedCellAttechmentViewModel?, isFullSize: Bool) -> FeedCellSizes
 }
 
 final class NewsfeedCellLayoutCalculator: NewsfeedCellLayoutCalculatorProtocol {
@@ -27,22 +28,40 @@ final class NewsfeedCellLayoutCalculator: NewsfeedCellLayoutCalculatorProtocol {
         self.screenWidth = width
     }
     
-    func sizes(postText: String?, attechment: FeedCellAttechmentViewModel?) -> FeedCellSizes {
+    func sizes(postText: String?, attechment: FeedCellAttechmentViewModel?, isFullSize: Bool) -> FeedCellSizes {
         
         let feedWidth = screenWidth - Constans.feedInsets.left - Constans.feedInsets.right
+        var showMoreButton = false
         
         //MARK: - Calculate post text height
         var postLabelFrame = CGRect(origin: CGPoint(x: Constans.postLabelInsets.left, y: Constans.postLabelInsets.top), size: CGSize.zero)
         
         if let postText = postText, !postText.isEmpty {
             let width = feedWidth - Constans.postLabelInsets.left - Constans.postLabelInsets.right
-            let height = postText.height(width: width, font: Constans.labelFont)
+            var height = postText.height(width: width, font: Constans.labelFont)
+            
+            let limitHeight = Constans.labelFont.lineHeight * Constans.minifiedPostLimitLines
+            
+            if !isFullSize && height > limitHeight {
+                height = Constans.labelFont.lineHeight * Constans.minifiedPostLines
+                showMoreButton = true
+            }
             
             postLabelFrame.size = CGSize(width: width, height: height)
         }
         
+        //MARK: - Calculate moreTextButton size
+        var moreTextButtonSize = CGSize.zero
+        
+        if showMoreButton {
+            moreTextButtonSize = Constans.moreTextButtonSize
+        }
+        
+        let moreTextButtonSizeOrigin = CGPoint(x: Constans.moreTextButtonInsets.left, y: postLabelFrame.maxY)
+        let moreTextButtonFrame = CGRect(origin: moreTextButtonSizeOrigin, size: moreTextButtonSize)
+        
         //MARK: - Calculate post image height
-        let postImageTop = postLabelFrame.size == CGSize.zero ? Constans.postLabelInsets.top : postLabelFrame.maxY + Constans.postLabelInsets.bottom
+        let postImageTop = postLabelFrame.size == CGSize.zero ? Constans.postLabelInsets.top : moreTextButtonFrame.maxY + Constans.postLabelInsets.bottom
         var postImageFrame = CGRect(origin: CGPoint(x: 0, y:  postImageTop), size: CGSize.zero)
         
         if let attechment = attechment {
@@ -60,6 +79,10 @@ final class NewsfeedCellLayoutCalculator: NewsfeedCellLayoutCalculatorProtocol {
         //MARK: - Calculate total height
         let totalHeight = bottomViewFrame.maxY + Constans.feedInsets.bottom
         
-        return Sizes(postLabelFrame: postLabelFrame, attechmentFrame: postImageFrame, bottomViewFrame: bottomViewFrame, totalHeight: totalHeight)
+        return Sizes(postLabelFrame: postLabelFrame,
+                     attechmentFrame: postImageFrame,
+                     bottomViewFrame: bottomViewFrame,
+                     moreTextButtonFrame: moreTextButtonFrame,
+                     totalHeight: totalHeight)
     }
 }

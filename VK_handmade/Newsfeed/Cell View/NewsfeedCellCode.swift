@@ -8,7 +8,13 @@
 import Foundation
 import UIKit
 
+protocol NewsfeedCellCodeDelegate: AnyObject {
+    func revealPost(for cell: NewsfeedCellCode)
+}
+
 final class NewsfeedCellCode: UITableViewCell {
+    
+    weak var delegate: NewsfeedCellCodeDelegate?
     
     //First Layer
     let feedView: UIView = {
@@ -30,6 +36,16 @@ final class NewsfeedCellCode: UITableViewCell {
         label.numberOfLines = 0
         label.font = Constans.labelFont
         return label
+    }()
+    
+    let moreTextButton: UIButton = {
+        let button = UIButton()
+        button.titleLabel?.font = UIFont.systemFont(ofSize: 15, weight: .medium)
+        button.setTitleColor(#colorLiteral(red: 0.4012392163, green: 0.6231879592, blue: 0.8316264749, alpha: 1), for: .normal)
+        button.contentHorizontalAlignment = .left
+        button.contentVerticalAlignment = .center
+        button.setTitle("Показать полностью...", for: .normal)
+        return button
     }()
     
     let postImageView: WebImageView = {
@@ -129,17 +145,34 @@ final class NewsfeedCellCode: UITableViewCell {
         return label
     }()
     
+    override func prepareForReuse() {
+        iconImageView.set(url: nil)
+        postImageView.set(url: nil)
+    }
+    
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
         backgroundColor = .clear
         selectionStyle = .none
         
+        feedView.layer.cornerRadius = 10
+        feedView.clipsToBounds = true
+        
+        iconImageView.layer.cornerRadius = Constans.topHeight / 2
+        iconImageView.clipsToBounds = true
+        
+        moreTextButton.addTarget(self, action: #selector(moreTextButtonTouch), for: .touchUpInside)
+        
         overlayFirstLayer()
         overlaySecondLayer()
         overlayThirdLayerOnTopView()
         overlayThirdLayerOnBottomView()
         overlayFouthLayerOnBottomViewView()
+    }
+
+    @objc func moreTextButtonTouch() {
+        delegate?.revealPost(for: self)
     }
     
     //Fouth layer on bottomViewViews constraints
@@ -170,7 +203,7 @@ final class NewsfeedCellCode: UITableViewCell {
     }
     
     //Third layer on bottomView constraints
-    func overlayThirdLayerOnBottomView() {
+    private func overlayThirdLayerOnBottomView() {
         bottomView.addSubview(likesView)
         bottomView.addSubview(commentsView)
         bottomView.addSubview(viewsView)
@@ -192,7 +225,7 @@ final class NewsfeedCellCode: UITableViewCell {
     }
         
     //Third layer on topView constraints
-    func overlayThirdLayerOnTopView() {
+    private func overlayThirdLayerOnTopView() {
         topView.addSubview(iconImageView)
         topView.addSubview(nameLabel)
         topView.addSubview(dateLabel)
@@ -214,23 +247,23 @@ final class NewsfeedCellCode: UITableViewCell {
     }
     
     //Second layer constraints
-    func overlaySecondLayer() {
+    private func overlaySecondLayer() {
         feedView.addSubview(topView)
+        feedView.addSubview(postLabel)
+        feedView.addSubview(moreTextButton)
+        feedView.addSubview(postImageView)
+        feedView.addSubview(bottomView)
         
         topView.topAnchor.constraint(equalTo: feedView.topAnchor).isActive = true
         topView.leadingAnchor.constraint(equalTo: feedView.leadingAnchor, constant: 8).isActive = true
         topView.trailingAnchor.constraint(equalTo: feedView.trailingAnchor, constant: -8).isActive = true
         topView.heightAnchor.constraint(equalToConstant: Constans.topHeight).isActive = true
-        
-        feedView.addSubview(postLabel)
-        feedView.addSubview(postImageView)
-        feedView.addSubview(bottomView)
     }
+    
     //First layer constraints
-    func overlayFirstLayer() {
-        addSubview(feedView)
+    private func overlayFirstLayer() {
+        contentView.addSubview(feedView)
         
-
         feedView.topAnchor.constraint(equalTo: topAnchor).isActive = true
         feedView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16).isActive = true
         feedView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16).isActive = true
@@ -249,6 +282,7 @@ final class NewsfeedCellCode: UITableViewCell {
         postLabel.frame = feed.sizes.postLabelFrame
         postImageView.frame = feed.sizes.attechmentFrame
         bottomView.frame = feed.sizes.bottomViewFrame
+        moreTextButton.frame = feed.sizes.moreTextButtonFrame
         
         if let photoAttechment = feed.attechment {
             postImageView.set(url: photoAttechment.photoUrlString)

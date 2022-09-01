@@ -116,6 +116,12 @@
                                     </view>
                                 </subviews>
                             </view>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="1qF-HQ-f9v">
+                                <rect key="frame" x="103" y="77" width="67" height="31"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <state key="normal" title="Button"/>
+                                <buttonConfiguration key="configuration" style="plain" title="Button"/>
+                            </button>
                         </subviews>
                     </view>
                 </subviews>
@@ -128,6 +134,7 @@
                 <outlet property="feedView" destination="BbR-iF-Uj6" id="WL6-DA-IEF"/>
                 <outlet property="iconImageView" destination="jcd-AM-brr" id="53G-C4-Zhb"/>
                 <outlet property="likesLabel" destination="Ajn-OA-9B5" id="DHV-Hv-mej"/>
+                <outlet property="moreTextButton" destination="1qF-HQ-f9v" id="zmD-yz-ukr"/>
                 <outlet property="nameLabel" destination="lft-UA-hV1" id="XNn-5G-Vwf"/>
                 <outlet property="postImageView" destination="0Ux-3n-2Df" id="mgM-n7-hit"/>
                 <outlet property="postLabel" destination="f1E-5G-Dxn" id="OuS-hQ-6AD"/>

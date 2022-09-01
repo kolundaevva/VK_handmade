@@ -19,4 +19,10 @@ struct Constans {
     static let viewWidth: CGFloat = 75
     
     static let imageSize: CGFloat = 26
+    
+    static let minifiedPostLimitLines: CGFloat = 8
+    static let minifiedPostLines: CGFloat = 6
+    
+    static let moreTextButtonInsets = UIEdgeInsets(top: 0, left: 8, bottom: 0, right: 0)
+    static let moreTextButtonSize = CGSize(width: 170, height: 30)
 }
