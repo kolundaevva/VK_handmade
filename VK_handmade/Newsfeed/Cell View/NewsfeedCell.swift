@@ -15,7 +15,7 @@ protocol FeedCellViewModel {
     var likes: String? { get }
     var comments: String? { get }
     var views: String? { get }
-    var attechment: FeedCellAttechmentViewModel? { get }
+    var attechments: [FeedCellAttechmentViewModel] { get }
     var sizes: FeedCellSizes { get }
 }
 
@@ -64,14 +64,10 @@ class NewsfeedCell: UITableViewCell {
         
         bottomView.backgroundColor = .white
         
-        moreTextButton.addTarget(self, action: #selector(printSmth), for: .allTouchEvents)
+//        moreTextButton.addTarget(self, action: #selector(printSmth), for: .allTouchEvents)
         
         backgroundColor = .clear
         selectionStyle = .none
-    }
-    
-    @objc func printSmth() {
-        print("OOOOOOK")
     }
     
     func configure(with feed: FeedCellViewModel) {
@@ -88,7 +84,7 @@ class NewsfeedCell: UITableViewCell {
         bottomView.frame = feed.sizes.bottomViewFrame
         moreTextButton.frame = feed.sizes.moreTextButtonFrame
         
-        if let photoAttechment = feed.attechment {
+        if let photoAttechment = feed.attechments.first, feed.attechments.count == 1 {
             postImageView.set(url: photoAttechment.photoUrlString)
             postImageView.isHidden = false
         } else {

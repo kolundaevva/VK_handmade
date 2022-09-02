@@ -53,6 +53,8 @@ final class NewsfeedCellCode: UITableViewCell {
         return view
     }()
     
+    let galleryView = GalleryView()
+    
     let bottomView: UIView = {
        let view = UIView()
         return view
@@ -252,6 +254,7 @@ final class NewsfeedCellCode: UITableViewCell {
         feedView.addSubview(postLabel)
         feedView.addSubview(moreTextButton)
         feedView.addSubview(postImageView)
+        feedView.addSubview(galleryView)
         feedView.addSubview(bottomView)
         
         topView.topAnchor.constraint(equalTo: feedView.topAnchor).isActive = true
@@ -280,15 +283,22 @@ final class NewsfeedCellCode: UITableViewCell {
         viewsLabel.text = feed.views
         
         postLabel.frame = feed.sizes.postLabelFrame
-        postImageView.frame = feed.sizes.attechmentFrame
         bottomView.frame = feed.sizes.bottomViewFrame
         moreTextButton.frame = feed.sizes.moreTextButtonFrame
         
-        if let photoAttechment = feed.attechment {
+        if let photoAttechment = feed.attechments.first, feed.attechments.count == 1 {
+            postImageView.frame = feed.sizes.attechmentFrame
             postImageView.set(url: photoAttechment.photoUrlString)
             postImageView.isHidden = false
+            galleryView.isHidden = true
+        } else if feed.attechments.count > 1 {
+            galleryView.frame = feed.sizes.attechmentFrame
+            galleryView.set(photos: feed.attechments)
+            galleryView.isHidden = false
+            postImageView.isHidden = true
         } else {
             postImageView.isHidden = true
+            galleryView.isHidden = true
         }
     }
     

@@ -40,11 +40,12 @@ class NewsfeedPresenter: NewsfeedPresentationLogic {
     private func cellViewModel(from item: API.Types.Response.VKPostData.FeedResponse.VKPost, profiles: [API.Types.Response.VKUser.UserResponse.VKFriend], groups: [API.Types.Response.VKGroupData.GroupResponse.VKGroup], postIds: [Int]) -> FeedViewModel.Cell {
         
         let profile = self.profile(for: item.sourceId, profiles: profiles, groups: groups)
-        let photoAttechment = self.photoAttechment(feed: item)
+//        let photoAttechment = self.photoAttechment(feed: item)
+        let photoAttechments = self.photoAttechments(feed: item)
         let date = Date(timeIntervalSince1970: item.date)
         let dateTitle = dateFormatter.string(from: date)
         let isFullSize = postIds.contains(item.postId)
-        let sizes = cellLayoutCalculator.sizes(postText: item.text, attechment: photoAttechment, isFullSize: isFullSize)
+        let sizes = cellLayoutCalculator.sizes(postText: item.text, attechments: photoAttechments, isFullSize: isFullSize)
         
         return FeedViewModel.Cell.init(postId: item.postId,
                                        iconUrl: profile.photo,
@@ -54,7 +55,7 @@ class NewsfeedPresenter: NewsfeedPresentationLogic {
                                        likes: String(item.likes?.count ?? 0),
                                        comments: String(item.comments?.count ?? 0),
                                        views: String(item.views?.count ?? 0),
-                                       attechment: photoAttechment,
+                                       attechments: photoAttechments,
                                        sizes: sizes)
     }
     
@@ -70,5 +71,14 @@ class NewsfeedPresenter: NewsfeedPresentationLogic {
             attachment.photo
         }), let firstPhoto = photo.first else { return nil }
         return FeedViewModel.FeedCellPhotoAttechment.init(photoUrlString: firstPhoto.srcBIG, height: firstPhoto.height, width: firstPhoto.width)
+    }
+    
+    private func photoAttechments(feed: API.Types.Response.VKPostData.FeedResponse.VKPost) -> [FeedViewModel.FeedCellPhotoAttechment] {
+        guard let attechments = feed.attachments else { return [] }
+        
+        return attechments.compactMap { attechment in
+            guard let photo = attechment.photo else { return nil }
+            return FeedViewModel.FeedCellPhotoAttechment.init(photoUrlString: photo.srcBIG, height: photo.height, width: photo.width)
+        }
     }
 }

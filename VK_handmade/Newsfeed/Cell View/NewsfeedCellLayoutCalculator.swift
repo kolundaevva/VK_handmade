@@ -17,7 +17,7 @@ fileprivate struct Sizes: FeedCellSizes {
 }
 
 protocol NewsfeedCellLayoutCalculatorProtocol {
-    func sizes(postText: String?, attechment: FeedCellAttechmentViewModel?, isFullSize: Bool) -> FeedCellSizes
+    func sizes(postText: String?, attechments: [FeedCellAttechmentViewModel], isFullSize: Bool) -> FeedCellSizes
 }
 
 final class NewsfeedCellLayoutCalculator: NewsfeedCellLayoutCalculatorProtocol {
@@ -28,7 +28,7 @@ final class NewsfeedCellLayoutCalculator: NewsfeedCellLayoutCalculatorProtocol {
         self.screenWidth = width
     }
     
-    func sizes(postText: String?, attechment: FeedCellAttechmentViewModel?, isFullSize: Bool) -> FeedCellSizes {
+    func sizes(postText: String?, attechments: [FeedCellAttechmentViewModel], isFullSize: Bool) -> FeedCellSizes {
         
         let feedWidth = screenWidth - Constans.feedInsets.left - Constans.feedInsets.right
         var showMoreButton = false
@@ -64,12 +64,25 @@ final class NewsfeedCellLayoutCalculator: NewsfeedCellLayoutCalculatorProtocol {
         let postImageTop = postLabelFrame.size == CGSize.zero ? Constans.postLabelInsets.top : moreTextButtonFrame.maxY + Constans.postLabelInsets.bottom
         var postImageFrame = CGRect(origin: CGPoint(x: 0, y:  postImageTop), size: CGSize.zero)
         
-        if let attechment = attechment {
+        if let attechment = attechments.first {
             let photoHeight = Float(attechment.height)
             let photoWidth = Float(attechment.width)
             let ration = CGFloat(photoHeight / photoWidth)
             
-            postImageFrame.size = CGSize(width: feedWidth, height: feedWidth * ration)
+            if attechments.count == 1 {
+                postImageFrame.size = CGSize(width: feedWidth, height: feedWidth * ration)
+            } else if attechments.count > 1 {
+                var photoSizes = [CGSize]()
+                
+                for attechment in attechments {
+                    let size = CGSize(width: attechment.width, height: attechment.height)
+                    photoSizes.append(size)
+                }
+                
+                let height = RowLayout.rowHeightCounter(superViewWidth: feedWidth, photoSizes: photoSizes)
+                let frameSize = CGSize(width: feedWidth, height: height!)
+                postImageFrame.size = frameSize
+            }
         }
         
         //MARK: - Calculate post bottomView height
