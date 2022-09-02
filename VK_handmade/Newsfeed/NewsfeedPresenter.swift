@@ -52,11 +52,24 @@ class NewsfeedPresenter: NewsfeedPresentationLogic {
                                        name: profile.name,
                                        date: dateTitle,
                                        text: item.text,
-                                       likes: String(item.likes?.count ?? 0),
-                                       comments: String(item.comments?.count ?? 0),
-                                       views: String(item.views?.count ?? 0),
+                                       likes: formattedCounter(item.likes?.count),
+                                       comments: formattedCounter(item.comments?.count),
+                                       views: formattedCounter(item.views?.count),
                                        attechments: photoAttechments,
                                        sizes: sizes)
+    }
+    
+    private func formattedCounter(_ counter: Int?) -> String? {
+        guard let counter = counter, counter > 0 else { return nil }
+        var stringCounter = String(counter)
+        
+        if 4...6 ~= stringCounter.count {
+            stringCounter = String(stringCounter.dropLast(3)) + "K"
+        } else if stringCounter.count > 6 {
+            stringCounter = String(stringCounter.dropLast(6)) + "M"
+        }
+        
+        return stringCounter
     }
     
     private func profile(for sourceId: Int, profiles: [API.Types.Response.VKUser.UserResponse.VKFriend], groups: [API.Types.Response.VKGroupData.GroupResponse.VKGroup]) -> ProfileRepsentable {
