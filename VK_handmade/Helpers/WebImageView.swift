@@ -9,10 +9,15 @@ import Foundation
 import UIKit
 
 class WebImageView: UIImageView {
+    
+    private var currentImageUrl: String?
+    
     func set(url: String?) {
         guard let url = url, let imageURL = URL(string: url) else {
             self.image = nil
             return }
+        
+        currentImageUrl = url
         
         if let cachedResponse = URLCache.shared.cachedResponse(for: URLRequest(url: imageURL)) {
             self.image = UIImage(data: cachedResponse.data)
@@ -22,7 +27,6 @@ class WebImageView: UIImageView {
         let task = URLSession.shared.dataTask(with: imageURL) { [weak self] data, response, error in
             if let data = data, let response = response {
                 DispatchQueue.main.async {
-                    self?.image = UIImage(data: data)
                     self?.handleLoadedImage(data: data, response: response)
                 }
             }
@@ -34,5 +38,9 @@ class WebImageView: UIImageView {
         guard let responseURL = response.url else { return }
         let cachedResponse = CachedURLResponse(response: response, data: data)
         URLCache.shared.storeCachedResponse(cachedResponse, for: URLRequest(url: responseURL))
+        
+        if responseURL.absoluteString == currentImageUrl {
+            self.image = UIImage(data: data)
+        }
     }
 }
