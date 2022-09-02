@@ -16,4 +16,10 @@ class GroupTableViewCell: UITableViewCell {
         groupName.text = group.name
         groupImage.set(url: group.photo)
     }
+    
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        groupImage.layer.masksToBounds = true
+        groupImage.layer.cornerRadius = 10
+    }
 }

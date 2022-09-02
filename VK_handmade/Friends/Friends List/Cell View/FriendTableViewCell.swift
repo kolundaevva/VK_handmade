@@ -16,4 +16,10 @@ class FriendTableViewCell: UITableViewCell {
         friendName.text = "\(friend.firstName) \(friend.lastName)"
         friendImage.set(url: friend.photo)
     }
+    
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        friendImage.layer.masksToBounds = true
+        friendImage.layer.cornerRadius = 10
+    }
 }
