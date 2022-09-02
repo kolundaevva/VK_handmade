@@ -20,6 +20,11 @@ class NewsfeedViewController: UIViewController, NewsfeedDisplayLogic {
     var router: (NSObjectProtocol & NewsfeedRoutingLogic)?
     
     private var feedViewModel = FeedViewModel.init(cells: [])
+    private let refreshControl: UIRefreshControl = {
+       let refresh = UIRefreshControl()
+        refresh.addTarget(NewsfeedViewController.self, action: #selector(updateFeed), for: .valueChanged)
+        return refresh
+    }()
     
     // MARK: Setup
     
@@ -44,16 +49,20 @@ class NewsfeedViewController: UIViewController, NewsfeedDisplayLogic {
     override func viewDidLoad() {
         super.viewDidLoad()
         setup()
+        setupTableView()
+        view.backgroundColor = #colorLiteral(red: 0.1764705926, green: 0.4980392158, blue: 0.7568627596, alpha: 1)
         
-//        let nib = UINib(nibName: "NewsfeedCell", bundle: nil)
-//        tableView.register(nib, forCellReuseIdentifier: "Post")
+        interactor?.makeRequest(request: Newsfeed.Model.Request.RequestType.getNewsFeed)
+    }
+    
+    private func setupTableView() {
+        //        let nib = UINib(nibName: "NewsfeedCell", bundle: nil)
+        //        tableView.register(nib, forCellReuseIdentifier: "Post")
         tableView.register(NewsfeedCellCode.self, forCellReuseIdentifier: "Post")
         
         tableView.separatorStyle = .none
         tableView.backgroundColor = .clear
-        view.backgroundColor = #colorLiteral(red: 0.1764705926, green: 0.4980392158, blue: 0.7568627596, alpha: 1)
-        
-        interactor?.makeRequest(request: Newsfeed.Model.Request.RequestType.getNewsFeed)
+        tableView.addSubview(refreshControl)
     }
     
     func displayData(viewModel: Newsfeed.Model.ViewModel.ViewModelData) {
@@ -61,11 +70,16 @@ class NewsfeedViewController: UIViewController, NewsfeedDisplayLogic {
         case .displayNewsFeed(feed: let feed):
             self.feedViewModel = feed
             self.tableView.reloadData()
+            refreshControl.endRefreshing()
         case .showError(error: let error):
             let ac = UIAlertController(title: "Something goes wrong", message: error.localizedDescription, preferredStyle: .alert)
             ac.addAction(UIAlertAction(title: "OK", style: .default))
             self.present(ac, animated: true)
         }
+    }
+    
+    @objc private func updateFeed() {
+        interactor?.makeRequest(request: Newsfeed.Model.Request.RequestType.getNewsFeed)
     }
 }
 
