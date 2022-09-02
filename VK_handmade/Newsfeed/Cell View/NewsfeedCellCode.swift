@@ -31,11 +31,26 @@ final class NewsfeedCellCode: UITableViewCell {
         return view
     }()
     
-    let postLabel: UILabel = {
-      let label = UILabel()
-        label.numberOfLines = 0
-        label.font = Constans.labelFont
-        return label
+//    let postLabel: UILabel = {
+//      let label = UILabel()
+//        label.numberOfLines = 0
+//        label.font = Constans.labelFont
+//        return label
+//    }()
+    
+    let postLabel: UITextView = {
+        let postView = UITextView()
+        postView.font = Constans.labelFont
+        postView.isScrollEnabled = false
+        postView.isSelectable = true
+        postView.isEditable = false
+        postView.isUserInteractionEnabled = true
+        
+        let padding = postView.textContainer.lineFragmentPadding
+        postView.textContainerInset = UIEdgeInsets(top: 0, left: -padding, bottom: 0, right: -padding)
+        
+        postView.dataDetectorTypes = .all
+        return postView
     }()
     
     let moreTextButton: UIButton = {
