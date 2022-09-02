@@ -232,7 +232,7 @@ final class NewsfeedCellCode: UITableViewCell {
         topView.addSubview(nameLabel)
         topView.addSubview(dateLabel)
         
-        iconImageView.topAnchor.constraint(equalTo: topView.topAnchor).isActive = true
+        iconImageView.centerYAnchor.constraint(equalTo: topView.centerYAnchor).isActive = true
         iconImageView.leadingAnchor.constraint(equalTo: topView.leadingAnchor).isActive = true
         iconImageView.heightAnchor.constraint(equalToConstant: Constans.topHeight).isActive = true
         iconImageView.widthAnchor.constraint(equalToConstant: Constans.topHeight).isActive = true
