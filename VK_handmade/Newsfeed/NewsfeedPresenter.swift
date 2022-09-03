@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import RealmSwift
 
 protocol NewsfeedPresentationLogic {
     func presentData(response: Newsfeed.Model.Response.ResponseType)
@@ -14,6 +15,7 @@ protocol NewsfeedPresentationLogic {
 
 class NewsfeedPresenter: NewsfeedPresentationLogic {
     weak var viewController: NewsfeedDisplayLogic?
+    var dataManager: Manager?
     
     let cellLayoutCalculator: NewsfeedCellLayoutCalculatorProtocol = NewsfeedCellLayoutCalculator()
     private let dateFormatter: DateFormatter = {
@@ -25,11 +27,15 @@ class NewsfeedPresenter: NewsfeedPresentationLogic {
     
     func presentData(response: Newsfeed.Model.Response.ResponseType) {
         switch response {
-        case .presentNewsFeed(success: let success, postIds: let postIds):
-            let cells = success.response.items.map { item in
-                cellViewModel(from: item, profiles: success.response.profiles, groups: success.response.groups, postIds: postIds)
+        case .presentNewsFeed(postIds: let postIds):
+            guard let realm = try? Realm(), let user = realm.object(ofType: User.self, forPrimaryKey: ApiKey.session.userId) else { return }
+            guard let response = user.feeds.first else { return }
+            
+            let cellsList = response.feed.map { feed -> FeedViewModel.Cell in
+                return self.cellViewModel(from: feed, profiles: Array(response.users), groups: Array(response.groups), postIds: postIds)
             }
             
+            let cells = Array(cellsList)
             let feedCells = FeedViewModel.init(cells: cells)
             viewController?.displayData(viewModel: Newsfeed.Model.ViewModel.ViewModelData.displayNewsFeed(feed: feedCells))
         case .presentError(error: let error):
@@ -37,10 +43,9 @@ class NewsfeedPresenter: NewsfeedPresentationLogic {
         }
     }
     
-    private func cellViewModel(from item: API.Types.Response.VKPostData.FeedResponse.VKPost, profiles: [API.Types.Response.VKUser.UserResponse.VKFriend], groups: [API.Types.Response.VKGroupData.GroupResponse.VKGroup], postIds: [Int]) -> FeedViewModel.Cell {
+    private func cellViewModel(from item: FeedResponse, profiles: [Friend], groups: [Group], postIds: [Int]) -> FeedViewModel.Cell {
         
         let profile = self.profile(for: item.sourceId, profiles: profiles, groups: groups)
-//        let photoAttechment = self.photoAttechment(feed: item)
         let photoAttechments = self.photoAttechments(feed: item)
         let date = Date(timeIntervalSince1970: item.date)
         let dateTitle = dateFormatter.string(from: date)
@@ -52,9 +57,9 @@ class NewsfeedPresenter: NewsfeedPresentationLogic {
                                        name: profile.name,
                                        date: dateTitle,
                                        text: item.text,
-                                       likes: formattedCounter(item.likes?.count),
-                                       comments: formattedCounter(item.comments?.count),
-                                       views: formattedCounter(item.views?.count),
+                                       likes: formattedCounter(item.likes),
+                                       comments: formattedCounter(item.comments),
+                                       views: formattedCounter(item.views),
                                        attechments: photoAttechments,
                                        sizes: sizes)
     }
@@ -72,25 +77,16 @@ class NewsfeedPresenter: NewsfeedPresentationLogic {
         return stringCounter
     }
     
-    private func profile(for sourceId: Int, profiles: [API.Types.Response.VKUser.UserResponse.VKFriend], groups: [API.Types.Response.VKGroupData.GroupResponse.VKGroup]) -> ProfileRepsentable {
+    private func profile(for sourceId: Int, profiles: [Friend], groups: [Group]) -> ProfileRepsentable {
         let profilesOrGrpoups: [ProfileRepsentable] = sourceId >= 0 ? profiles : groups
         let id = abs(sourceId)
         let profileRepsentable = profilesOrGrpoups.first { $0.id == id }
         return profileRepsentable!
     }
     
-    private func photoAttechment(feed: API.Types.Response.VKPostData.FeedResponse.VKPost) -> FeedViewModel.FeedCellPhotoAttechment? {
-        guard let photo = feed.attachments?.compactMap({ attachment in
-            attachment.photo
-        }), let firstPhoto = photo.first else { return nil }
-        return FeedViewModel.FeedCellPhotoAttechment.init(photoUrlString: firstPhoto.srcBIG, height: firstPhoto.height, width: firstPhoto.width)
-    }
-    
-    private func photoAttechments(feed: API.Types.Response.VKPostData.FeedResponse.VKPost) -> [FeedViewModel.FeedCellPhotoAttechment] {
-        guard let attechments = feed.attachments else { return [] }
-        
-        return attechments.compactMap { attechment in
-            guard let photo = attechment.photo else { return nil }
+    private func photoAttechments(feed: FeedResponse) -> [FeedViewModel.FeedCellPhotoAttechment] {
+
+        return feed.photos.map { photo in
             return FeedViewModel.FeedCellPhotoAttechment.init(photoUrlString: photo.srcBIG, height: photo.height, width: photo.width)
         }
     }

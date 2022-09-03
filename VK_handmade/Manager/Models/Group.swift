@@ -8,7 +8,7 @@
 import Foundation
 import RealmSwift
 
-class Group: Object {
+class Group: Object, ProfileRepsentable {
     @objc dynamic var id = 0
     @objc dynamic var name = ""
     @objc dynamic var photo = ""

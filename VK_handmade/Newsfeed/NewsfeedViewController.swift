@@ -18,7 +18,7 @@ class NewsfeedViewController: UIViewController, NewsfeedDisplayLogic {
     
     var interactor: NewsfeedBusinessLogic?
     var router: (NSObjectProtocol & NewsfeedRoutingLogic)?
-    
+    private let dataManager: Manager = DataManager()
     private var feedViewModel = FeedViewModel.init(cells: [])
     private let refreshControl: UIRefreshControl = {
        let refresh = UIRefreshControl()
@@ -36,7 +36,9 @@ class NewsfeedViewController: UIViewController, NewsfeedDisplayLogic {
         viewController.interactor = interactor
         viewController.router     = router
         interactor.presenter      = presenter
+        interactor.dataManager    = dataManager
         presenter.viewController  = viewController
+        presenter.dataManager     = dataManager
         router.viewController     = viewController
     }
     

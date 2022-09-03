@@ -13,6 +13,7 @@ protocol Manager {
     func saveFriends(_ data: [API.Types.Response.VKUser.UserResponse.VKFriend])
     func saveUserPhotosData(_ data: [API.Types.Response.VKPhoto.Res.Item], id: Int)
     func saveUserGroupsData(_ data: [API.Types.Response.VKGroupData.GroupResponse.VKGroup])
+    func saveUserFeedData(_ data: API.Types.Response.VKPostData.FeedResponse)
     func addGroup(_ group: Group)
 }
 
@@ -79,6 +80,43 @@ class DataManager: Manager {
             try realm.write {
                 realm.delete(oldGourps)
                 user.groups.append(objectsIn: groups)
+            }
+        } catch {
+            print(error)
+        }
+    }
+    
+    func saveUserFeedData(_ data: API.Types.Response.VKPostData.FeedResponse) {
+        do {
+            let realm = try Realm()
+            guard let user = realm.object(ofType: User.self, forPrimaryKey: ApiKey.session.userId) else { return }
+            let feeds = Feed(feedResponse: data)
+            let oldFeeds = user.feeds
+            
+            try realm.write {
+                oldFeeds.forEach { oldFeed in
+                    realm.delete(oldFeed.groups)
+                    realm.delete(oldFeed.users)
+                    oldFeed.feed.forEach { feed in
+                        feed.photos.forEach { photo in
+                            realm.delete(photo.sizes)
+                        }
+                        realm.delete(feed.photos)
+                    }
+                    realm.delete(oldFeed.feed)
+                }
+                
+//                oldFeeds.forEach { feed in
+//                    feed.feed.forEach { fd in
+//                        realm.delete(fd.photos)
+//                    }
+//
+//                    realm.delete(feed.groups)
+//                    realm.delete(feed.users)
+//                }
+                
+                realm.delete(oldFeeds)
+                user.feeds.append(feeds)
             }
         } catch {
             print(error)

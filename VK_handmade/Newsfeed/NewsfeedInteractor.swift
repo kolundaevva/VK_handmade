@@ -16,8 +16,8 @@ class NewsfeedInteractor: NewsfeedBusinessLogic {
 
   var presenter: NewsfeedPresentationLogic?
   var service: NewsfeedService?
+    var dataManager: Manager?
   
-    private var response: API.Types.Response.VKPostData?
     private var revealPostIds: [Int] = []
     
   func makeRequest(request: Newsfeed.Model.Request.RequestType) {
@@ -30,16 +30,15 @@ class NewsfeedInteractor: NewsfeedBusinessLogic {
           API.Client.shared.get(.getNewsFeed) { [weak self] (result: Result<API.Types.Response.VKPostData, API.Types.Error>) in
               switch result {
               case .success(let success):
-                  self?.response = success
-                  self?.presenter?.presentData(response: Newsfeed.Model.Response.ResponseType.presentNewsFeed(success: success, postIds: self?.revealPostIds ?? []))
+                  self?.dataManager?.saveUserFeedData(success.response)
+                  self?.presenter?.presentData(response: Newsfeed.Model.Response.ResponseType.presentNewsFeed(postIds: self?.revealPostIds ?? []))
               case .failure(let failure):
                   self?.presenter?.presentData(response: Newsfeed.Model.Response.ResponseType.presentError(error: failure))
               }
           }
       case .revealPostIds(postId: let postId):
           revealPostIds.append(postId)
-          guard let response = response else { return }
-          presenter?.presentData(response: Newsfeed.Model.Response.ResponseType.presentNewsFeed(success: response, postIds: revealPostIds))
+          presenter?.presentData(response: Newsfeed.Model.Response.ResponseType.presentNewsFeed(postIds: revealPostIds))
       }
   }
   

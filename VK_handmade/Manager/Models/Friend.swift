@@ -8,11 +8,14 @@
 import Foundation
 import RealmSwift
 
-class Friend: Object {
+class Friend: Object, ProfileRepsentable {
     @objc dynamic var id = 0
     @objc dynamic var photo = ""
     @objc dynamic var firstName = ""
     @objc dynamic var lastName = ""
+    var name: String {
+        return firstName + " " + lastName
+    }
     var photos = List<Photo>()
     
     override class func primaryKey() -> String? {

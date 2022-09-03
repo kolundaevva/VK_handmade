@@ -19,7 +19,7 @@ enum Newsfeed {
         }
         struct Response {
             enum ResponseType {
-                case presentNewsFeed(success: API.Types.Response.VKPostData, postIds: [Int])
+                case presentNewsFeed(postIds: [Int])
                 case presentError(error: API.Types.Error)
             }
         }

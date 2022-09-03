@@ -12,6 +12,7 @@ class User: Object {
     @objc dynamic var id = ""
     var friends = List<Friend>()
     var groups = List<Group>()
+    var feeds = List<Feed>()
     
     override class func primaryKey() -> String? {
         return "id"
