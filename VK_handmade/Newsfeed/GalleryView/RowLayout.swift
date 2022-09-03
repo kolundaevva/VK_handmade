@@ -87,7 +87,7 @@ class RowLayout: UICollectionViewLayout {
         }
         
         guard let minPhotoRation = minPhotoRation else { return nil }
-        let difference = superViewWidth / minPhotoRation.width
+        let difference = superViewWidth / minPhotoRation.height
         rowHeight = minPhotoRation.height * difference * CGFloat(RowLayout.numberOfLines)
         
         return rowHeight
