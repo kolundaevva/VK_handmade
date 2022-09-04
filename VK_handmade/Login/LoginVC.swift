@@ -21,8 +21,8 @@ class LoginVC: UIViewController {
         view = webView
     }
     
-    override func viewDidLoad() {
-        super.viewDidLoad()
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
         loadStartScreen()
     }
     
@@ -68,15 +68,20 @@ extension LoginVC: WKNavigationDelegate {
             }
         
         if let token = params["access_token"] {
+            let userToken = KeychainWrapper.standard.string(forKey: "userToken")
             guard let realm = try? Realm(), let id = params["user_id"] else { return }
             
             ApiKey.session.token = token
             ApiKey.session.userId = id
             
-            if let _ = realm.object(ofType: User.self, forPrimaryKey: id) {
+            if userToken == token {
                 login()
             } else {
-                dataManger.saveUser(id: id)
+                KeychainWrapper.standard.set(token, forKey: "userToken")
+                
+                if let _ = realm.object(ofType: User.self, forPrimaryKey: id) { } else {
+                    dataManger.saveUser(id: id)
+                }
                 login()
             }
         }

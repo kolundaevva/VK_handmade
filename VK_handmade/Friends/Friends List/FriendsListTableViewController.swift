@@ -22,6 +22,8 @@ class FriendsListTableViewController: UITableViewController {
         let nib = UINib(nibName: "FriendTableViewCell", bundle: nil)
         tableView.register(nib, forCellReuseIdentifier: "Friend")
         
+        navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Logout", style: .done, target: self, action: #selector(logut))
+        
         Realm.Configuration.defaultConfiguration = Realm.Configuration(deleteRealmIfMigrationNeeded: true)
         
         API.Client.shared.get(.getFriendsList) { (result: Result<API.Types.Response.VKUser, API.Types.Error>) in
@@ -85,5 +87,16 @@ class FriendsListTableViewController: UITableViewController {
                 fatalError("Something goes wrong")
             }
         })
+    }
+    
+    @objc private func logut() {
+        KeychainWrapper.standard.removeObject(forKey: "userToken")
+        
+        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+        let vc = storyboard.instantiateViewController(withIdentifier: "loginVC") as! LoginVC
+        
+        dismiss(animated: true) {
+            self.present(vc, animated: true)
+        }
     }
 }
