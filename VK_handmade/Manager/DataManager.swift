@@ -39,14 +39,28 @@ class DataManager: Manager {
             guard let user = realm.object(ofType: User.self, forPrimaryKey: ApiKey.session.userId) else { return }
             let friends = data.map { Friend(user: $0) }
             let oldFriends = user.friends
-
+            var uniqueNewFriends = [Friend]()
+            var uniqueOldFriends = [Friend]()
+            
+            friends.forEach { friend in
+                if !oldFriends.contains(where: { $0.id == friend.id }) {
+                    uniqueNewFriends.append(friend)
+                }
+            }
+            
+            oldFriends.forEach { friend in
+                if !friends.contains(where: { $0.id == friend.id }) {
+                    uniqueOldFriends.append(friend)
+                }
+            }
+            
             try realm.write {
-                oldFriends.forEach { frd in
+                uniqueOldFriends.forEach { frd in
                     realm.delete(frd.photos)
                 }
                 
-                realm.delete(oldFriends)
-                user.friends.append(objectsIn: friends)
+                realm.delete(uniqueOldFriends)
+                user.friends.append(objectsIn: uniqueNewFriends)
             }
         } catch {
             print(error)

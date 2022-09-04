@@ -34,6 +34,7 @@ class NewsfeedInteractor: NewsfeedBusinessLogic {
                   self?.presenter?.presentData(response: Newsfeed.Model.Response.ResponseType.presentNewsFeed(postIds: self?.revealPostIds ?? []))
               case .failure(let failure):
                   self?.presenter?.presentData(response: Newsfeed.Model.Response.ResponseType.presentError(error: failure))
+                  self?.presenter?.presentData(response: Newsfeed.Model.Response.ResponseType.presentNewsFeed(postIds: self?.revealPostIds ?? []))
               }
           }
       case .revealPostIds(postId: let postId):

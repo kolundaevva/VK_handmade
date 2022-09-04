@@ -26,15 +26,17 @@ class FriendsListTableViewController: UITableViewController {
         
         Realm.Configuration.defaultConfiguration = Realm.Configuration(deleteRealmIfMigrationNeeded: true)
         
-        API.Client.shared.get(.getFriendsList) { (result: Result<API.Types.Response.VKUser, API.Types.Error>) in
-            switch result {
-            case .success(let success):
-                let frd = success.response.items
-                self.dataManager.saveFriends(frd)
-            case .failure(let failure):
-                let ac = UIAlertController(title: "Something goes wrong", message: failure.localizedDescription, preferredStyle: .alert)
-                ac.addAction(UIAlertAction(title: "OK", style: .default))
-                self.present(ac, animated: true)
+        if UIApplication.shared.canOpenURL(URL(string: "https://google.com")!) {
+            API.Client.shared.get(.getFriendsList) { (result: Result<API.Types.Response.VKUser, API.Types.Error>) in
+                switch result {
+                case .success(let success):
+                    let frd = success.response.items
+                    self.dataManager.saveFriends(frd)
+                case .failure(let failure):
+                    let ac = UIAlertController(title: "Something goes wrong", message: failure.localizedDescription, preferredStyle: .alert)
+                    ac.addAction(UIAlertAction(title: "OK", style: .default))
+                    self.present(ac, animated: true)
+                }
             }
         }
         
