@@ -107,21 +107,23 @@ class DataManager: Manager {
             let feeds = Feed(feedResponse: data)
             let oldFeeds = user.feeds
             
-            try realm.write {
-                oldFeeds.forEach { oldFeed in
-                    realm.delete(oldFeed.groups)
-                    realm.delete(oldFeed.users)
-                    oldFeed.feed.forEach { feed in
-                        feed.photos.forEach { photo in
-                            realm.delete(photo.sizes)
+            if oldFeeds.first == feeds {
+                try realm.write {
+                    oldFeeds.forEach { oldFeed in
+                        realm.delete(oldFeed.groups)
+                        realm.delete(oldFeed.users)
+                        oldFeed.feed.forEach { feed in
+                            feed.photos.forEach { photo in
+                                realm.delete(photo.sizes)
+                            }
+                            realm.delete(feed.photos)
                         }
-                        realm.delete(feed.photos)
+                        realm.delete(oldFeed.feed)
                     }
-                    realm.delete(oldFeed.feed)
+                    
+                    realm.delete(oldFeeds)
+                    user.feeds.append(feeds)
                 }
-                
-                realm.delete(oldFeeds)
-                user.feeds.append(feeds)
             }
         } catch {
             print(error)
