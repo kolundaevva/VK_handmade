@@ -12,21 +12,21 @@
         <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" id="KGk-i7-Jjw" customClass="FriendTableViewCell" customModule="VK_handmade" customModuleProvider="target">
             <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-            <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="KGk-i7-Jjw" id="H2p-sc-9uM">
+            <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" ambiguous="YES" tableViewCell="KGk-i7-Jjw" id="H2p-sc-9uM">
                 <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Nco-Cz-tex">
-                        <rect key="frame" x="16" y="11.5" width="232" height="21"/>
+                        <rect key="frame" x="16" y="14" width="227" height="21"/>
                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                         <nil key="textColor"/>
                         <nil key="highlightedColor"/>
                     </label>
                     <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="9gt-Vr-XNO" customClass="WebImageView" customModule="VK_handmade" customModuleProvider="target">
-                        <rect key="frame" x="264" y="2" width="40" height="40"/>
+                        <rect key="frame" x="259" y="2" width="45" height="45"/>
                         <constraints>
-                            <constraint firstAttribute="width" constant="40" id="0ag-b1-cqY"/>
-                            <constraint firstAttribute="height" constant="40" id="Eeh-hO-60J"/>
+                            <constraint firstAttribute="width" constant="45" id="0ag-b1-cqY"/>
+                            <constraint firstAttribute="height" constant="45" id="Eeh-hO-60J"/>
                         </constraints>
                     </imageView>
                 </subviews>
