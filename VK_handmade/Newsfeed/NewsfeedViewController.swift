@@ -22,7 +22,7 @@ class NewsfeedViewController: UIViewController, NewsfeedDisplayLogic {
     private var feedViewModel = FeedViewModel.init(cells: [])
     private let refreshControl: UIRefreshControl = {
        let refresh = UIRefreshControl()
-        refresh.addTarget(NewsfeedViewController.self, action: #selector(updateFeed), for: .valueChanged)
+        refresh.addTarget(self, action: #selector(updateFeed), for: .valueChanged)
         return refresh
     }()
     
