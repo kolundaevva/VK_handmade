@@ -120,15 +120,6 @@ class DataManager: Manager {
                     realm.delete(oldFeed.feed)
                 }
                 
-//                oldFeeds.forEach { feed in
-//                    feed.feed.forEach { fd in
-//                        realm.delete(fd.photos)
-//                    }
-//
-//                    realm.delete(feed.groups)
-//                    realm.delete(feed.users)
-//                }
-                
                 realm.delete(oldFeeds)
                 user.feeds.append(feeds)
             }
