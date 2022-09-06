@@ -21,6 +21,10 @@ class LoginVC: UIViewController {
         view = webView
     }
     
+//    override func viewDidLoad() {
+//        Realm.Configuration.defaultConfiguration = Realm.Configuration(deleteRealmIfMigrationNeeded: true)
+//    }
+    
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         loadStartScreen()
