@@ -90,13 +90,32 @@ class DataManager: Manager {
             guard let user = realm.object(ofType: User.self, forPrimaryKey: ApiKey.session.userId) else { return }
             let groups = data.map { Group(group: $0) }
             let oldGourps = Array(user.groups)
+            var uniqueNewGroups = [Group]()
+            var uniqueOldGrops = [Group]()
+            
             
             if oldGourps != groups {
+                
+                groups.forEach { group in
+                    if !oldGourps.contains(where: { $0.id == group.id }) {
+                        uniqueNewGroups.append(group)
+                    }
+                }
+                
+                oldGourps.forEach { group in
+                    if !groups.contains(where: { $0.id == group.id }) {
+                        uniqueOldGrops.append(group)
+                    }
+                }
+                
                 try realm.write {
-                    oldGourps.forEach { group in
+                    uniqueOldGrops.forEach { group in
                         realm.delete(group)
                     }
-                    user.groups.append(objectsIn: groups)
+                    
+                    uniqueNewGroups.forEach { group in
+                        user.groups.append(group)
+                    }
                 }
             }
         } catch {

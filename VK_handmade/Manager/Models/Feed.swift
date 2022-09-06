@@ -34,7 +34,6 @@ class Feed: Object {
             }
         }
         
-        print("realmGroups count: \(realmGroups.count)")
         self.groups.append(objectsIn: realmGroups)
         
         let realmUsers = feedResponse.profiles.map { user in
