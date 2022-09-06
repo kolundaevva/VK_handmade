@@ -16,16 +16,25 @@ class Feed: Object {
     convenience init(feedResponse: API.Types.Response.VKPostData.FeedResponse) {
         self.init()
         
+        let realm = try! Realm()
+        guard let user = realm.object(ofType: User.self, forPrimaryKey: ApiKey.session.userId) else { return }
+        let userGroups = user.groups
+        
         let realmFeed = feedResponse.items.map { response in
             return FeedResponse(feedResponse: response)
         }
         
         self.feed.append(objectsIn: realmFeed)
         
-        let realmGroups = feedResponse.groups.map { group in
-            return Group(group: group)
+        var realmGroups = [Group]()
+        
+        feedResponse.groups.forEach { group in
+            if !userGroups.contains(where: {$0.id == group.id }) {
+                realmGroups.append(Group(group: group))
+            }
         }
         
+        print("realmGroups count: \(realmGroups.count)")
         self.groups.append(objectsIn: realmGroups)
         
         let realmUsers = feedResponse.profiles.map { user in

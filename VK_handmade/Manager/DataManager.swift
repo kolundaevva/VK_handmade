@@ -89,11 +89,15 @@ class DataManager: Manager {
             let realm = try Realm()
             guard let user = realm.object(ofType: User.self, forPrimaryKey: ApiKey.session.userId) else { return }
             let groups = data.map { Group(group: $0) }
-            let oldGourps = user.groups
-
-            try realm.write {
-                realm.delete(oldGourps)
-                user.groups.append(objectsIn: groups)
+            let oldGourps = Array(user.groups)
+            
+            if oldGourps != groups {
+                try realm.write {
+                    oldGourps.forEach { group in
+                        realm.delete(group)
+                    }
+                    user.groups.append(objectsIn: groups)
+                }
             }
         } catch {
             print(error)
@@ -107,7 +111,7 @@ class DataManager: Manager {
             let feeds = Feed(feedResponse: data)
             let oldFeeds = user.feeds
             
-            if oldFeeds.first == feeds {
+            if oldFeeds.first != feeds {
                 try realm.write {
                     oldFeeds.forEach { oldFeed in
                         realm.delete(oldFeed.groups)

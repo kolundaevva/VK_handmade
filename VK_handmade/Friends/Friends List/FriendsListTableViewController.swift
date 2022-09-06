@@ -24,8 +24,6 @@ class FriendsListTableViewController: UITableViewController {
         
         navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Logout", style: .done, target: self, action: #selector(logut))
         
-        Realm.Configuration.defaultConfiguration = Realm.Configuration(deleteRealmIfMigrationNeeded: true)
-        
         if UIApplication.shared.canOpenURL(URL(string: "https://google.com")!) {
             API.Client.shared.get(.getFriendsList) { (result: Result<API.Types.Response.VKUser, API.Types.Error>) in
                 switch result {

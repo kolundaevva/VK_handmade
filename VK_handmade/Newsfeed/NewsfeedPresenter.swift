@@ -30,9 +30,10 @@ class NewsfeedPresenter: NewsfeedPresentationLogic {
         case .presentNewsFeed(postIds: let postIds):
             guard let realm = try? Realm(), let user = realm.object(ofType: User.self, forPrimaryKey: ApiKey.session.userId) else { return }
             guard let response = user.feeds.first else { return }
-            
+            let groups = realm.objects(Group.self)
+
             let cellsList = response.feed.map { feed -> FeedViewModel.Cell in
-                return self.cellViewModel(from: feed, profiles: Array(response.users), groups: Array(response.groups), postIds: postIds)
+                return self.cellViewModel(from: feed, profiles: Array(response.users), groups: Array(groups), postIds: postIds)
             }
             
             let cells = Array(cellsList)
