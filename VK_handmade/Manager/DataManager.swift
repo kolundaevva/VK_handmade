@@ -38,29 +38,33 @@ class DataManager: Manager {
             let realm = try Realm()
             guard let user = realm.object(ofType: User.self, forPrimaryKey: ApiKey.session.userId) else { return }
             let friends = data.map { Friend(user: $0) }
-            let oldFriends = user.friends
-            var uniqueNewFriends = [Friend]()
-            var uniqueOldFriends = [Friend]()
+            let oldFriends = Array(user.friends)
             
-            friends.forEach { friend in
-                if !oldFriends.contains(where: { $0.id == friend.id }) {
-                    uniqueNewFriends.append(friend)
-                }
-            }
-            
-            oldFriends.forEach { friend in
-                if !friends.contains(where: { $0.id == friend.id }) {
-                    uniqueOldFriends.append(friend)
-                }
-            }
-            
-            try realm.write {
-                uniqueOldFriends.forEach { frd in
-                    realm.delete(frd.photos)
+            if friends != oldFriends {
+                
+                var uniqueNewFriends = [Friend]()
+                var uniqueOldFriends = [Friend]()
+                
+                friends.forEach { friend in
+                    if !oldFriends.contains(where: { $0.id == friend.id }) {
+                        uniqueNewFriends.append(friend)
+                    }
                 }
                 
-                realm.delete(uniqueOldFriends)
-                user.friends.append(objectsIn: uniqueNewFriends)
+                oldFriends.forEach { friend in
+                    if !friends.contains(where: { $0.id == friend.id }) {
+                        uniqueOldFriends.append(friend)
+                    }
+                }
+                
+                try realm.write {
+                    uniqueOldFriends.forEach { frd in
+                        realm.delete(frd.photos)
+                    }
+                    
+                    realm.delete(uniqueOldFriends)
+                    user.friends.append(objectsIn: uniqueNewFriends)
+                }
             }
         } catch {
             print(error)
@@ -131,6 +135,7 @@ class DataManager: Manager {
             let oldFeeds = user.feeds
             
             if oldFeeds.first != feeds {
+                
                 try realm.write {
                     oldFeeds.forEach { oldFeed in
                         realm.delete(oldFeed.groups)

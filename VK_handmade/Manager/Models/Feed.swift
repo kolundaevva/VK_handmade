@@ -19,6 +19,7 @@ class Feed: Object {
         let realm = try! Realm()
         guard let user = realm.object(ofType: User.self, forPrimaryKey: ApiKey.session.userId) else { return }
         let userGroups = user.groups
+        let userFriends = user.friends
         
         let realmFeed = feedResponse.items.map { response in
             return FeedResponse(feedResponse: response)
@@ -36,8 +37,12 @@ class Feed: Object {
         
         self.groups.append(objectsIn: realmGroups)
         
-        let realmUsers = feedResponse.profiles.map { user in
-            return Friend(user: user)
+        var realmUsers = [Friend]()
+        
+        feedResponse.profiles.forEach { user in
+            if !userFriends.contains(where: {$0.id == user.id }) {
+                realmUsers.append(Friend(user: user))
+            }
         }
         
         self.users.append(objectsIn: realmUsers)
