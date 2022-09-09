@@ -8,8 +8,10 @@
 import Foundation
 
 class ApiKey {
+    static let session = ApiKey()
+    
     var token = ""
     var userId = ""
     
-    static let session = ApiKey()
+    private init() {}
 }
