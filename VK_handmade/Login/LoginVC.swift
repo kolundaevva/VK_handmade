@@ -16,19 +16,18 @@ class LoginVC: UIViewController {
     
     override func loadView() {
         super.loadView()
+        
         webView = WKWebView()
         webView.navigationDelegate = self
-        view = webView
+        
+        view.addSubview(webView)
+        webView.frame = view.frame
+        webView.isHidden = true
     }
     
 //    override func viewDidLoad() {
 //        Realm.Configuration.defaultConfiguration = Realm.Configuration(deleteRealmIfMigrationNeeded: true)
 //    }
-    
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        loadStartScreen()
-    }
     
     private func loadStartScreen() {
         var urlComponents = URLComponents()
@@ -45,6 +44,16 @@ class LoginVC: UIViewController {
         webView.load(URLRequest(url: urlComponents.url!))
     }
     
+    @IBAction func loginPressed(_ sender: Any) {
+        webView.isHidden = false
+        loadStartScreen()
+    }
+    
+    @IBAction func unwindToLogin(segue: UIStoryboardSegue) {
+        removeVkCookies()
+        webView.isHidden = true
+    }
+    
     private func login() {
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
         guard let controller = storyboard.instantiateViewController(withIdentifier: "BarController") as? UITabBarController else { return }
@@ -52,6 +61,23 @@ class LoginVC: UIViewController {
         
         present(controller, animated: true)
     }
+    
+    func removeVkCookies() {
+      WKWebsiteDataStore.default()
+        .fetchDataRecords(ofTypes: WKWebsiteDataStore
+                            .allWebsiteDataTypes()) { records in
+        records.forEach { record in
+          guard record.displayName == "vk.com" ||
+                  record.displayName == "mail.ru" else { return }
+          WKWebsiteDataStore.default()
+            .removeData(ofTypes: record.dataTypes,
+                        for: [record], completionHandler: {
+          })
+        }
+      }
+        
+    }
+    
 }
 
 extension LoginVC: WKNavigationDelegate {
