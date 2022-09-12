@@ -20,7 +20,7 @@ class NewsfeedViewController: UIViewController, NewsfeedDisplayLogic {
     var router: (NSObjectProtocol & NewsfeedRoutingLogic)?
     private let dataManager: Manager = DataManager()
     private var feedViewModel = FeedViewModel.init(cells: [])
-    private let refreshControl: UIRefreshControl = {
+    lazy private var refreshControl: UIRefreshControl = {
        let refresh = UIRefreshControl()
         refresh.addTarget(self, action: #selector(updateFeed), for: .valueChanged)
         return refresh
