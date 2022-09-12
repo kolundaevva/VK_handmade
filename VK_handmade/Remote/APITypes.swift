@@ -178,6 +178,7 @@ extension API {
                 }
             }
             
+            class Empty: Decodable { }
         }
         
         enum Request {
