@@ -8,6 +8,10 @@
 import UIKit
 import RealmSwift
 
+//protocol logoutDelegate: NSObject {
+//    func removeVkCookies()
+//}
+
 class FriendsListTableViewController: UITableViewController {
     
     private let dataManager: Manager = DataManager()
@@ -15,6 +19,8 @@ class FriendsListTableViewController: UITableViewController {
     private var friends: List<Friend>?
     private var token: NotificationToken?
     private let id = ApiKey.session.userId
+    
+//    weak var delegate: logoutDelegate?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -91,12 +97,6 @@ class FriendsListTableViewController: UITableViewController {
     
     @objc private func logut() {
         KeychainWrapper.standard.removeObject(forKey: "userToken")
-        
-        let storyboard = UIStoryboard(name: "Main", bundle: nil)
-        let vc = storyboard.instantiateViewController(withIdentifier: "loginVC") as! LoginVC
-        
-        dismiss(animated: true) {
-            self.present(vc, animated: true)
-        }
+        performSegue(withIdentifier: "toLoginView", sender: nil)
     }
 }
