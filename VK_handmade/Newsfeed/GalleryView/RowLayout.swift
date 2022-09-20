@@ -17,7 +17,7 @@ class RowLayout: UICollectionViewLayout {
     
     var photos = [CGSize]()
     
-    static let numberOfLines = 2
+    static var numberOfLines = 1
     fileprivate let cellPadding: CGFloat = 8
     
     fileprivate var cache = [UICollectionViewLayoutAttributes]()
@@ -87,8 +87,8 @@ class RowLayout: UICollectionViewLayout {
         }
         
         guard let minPhotoRation = minPhotoRation else { return nil }
-        let difference = superViewWidth / minPhotoRation.height
-        rowHeight = minPhotoRation.height * difference * CGFloat(RowLayout.numberOfLines)
+//        let difference = superViewWidth / minPhotoRation.height
+        rowHeight = superViewWidth * CGFloat(RowLayout.numberOfLines)
         
         return rowHeight
     }
