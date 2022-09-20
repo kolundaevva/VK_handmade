@@ -17,6 +17,9 @@ final class ResultVC: UIViewController, UITableViewDelegate, UITableViewDataSour
     
     override func viewDidLoad() {
         view.addSubview(tableView)
+        
+        title = "Find Group"
+        
         tableView.delegate = self
         tableView.dataSource = self
         let cellNib = UINib(nibName: "GroupTableViewCell", bundle: nil)

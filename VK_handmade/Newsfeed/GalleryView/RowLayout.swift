@@ -82,11 +82,11 @@ class RowLayout: UICollectionViewLayout {
     static func rowHeightCounter(superViewWidth: CGFloat, photoSizes: [CGSize]) -> CGFloat? {
         var rowHeight: CGFloat
         
-        let minPhotoRation = photoSizes.min { first, second in
-            (first.height / first.width) < (second.height / second.width)
-        }
-        
-        guard let minPhotoRation = minPhotoRation else { return nil }
+//        let minPhotoRation = photoSizes.min { first, second in
+//            (first.height / first.width) < (second.height / second.width)
+//        }
+//
+//        guard let minPhotoRation = minPhotoRation else { return nil }
 //        let difference = superViewWidth / minPhotoRation.height
         rowHeight = superViewWidth * CGFloat(RowLayout.numberOfLines)
         

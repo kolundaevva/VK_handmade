@@ -20,6 +20,7 @@ class FriendPhotoCollectionViewController: UICollectionViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        title = "Friend's Photos"
         let nib = UINib(nibName: "PhotoCollectionViewCell", bundle: nil)
         collectionView.register(nib, forCellWithReuseIdentifier: "FriendPhoto")
         
@@ -78,5 +79,12 @@ class FriendPhotoCollectionViewController: UICollectionViewController {
                 fatalError("Something goes wrong")
             }
         })
+    }
+}
+
+extension FriendPhotoCollectionViewController {
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        print("Work?")
+        return CGSize(width: collectionView.frame.width / 2, height: collectionView.frame.width)
     }
 }

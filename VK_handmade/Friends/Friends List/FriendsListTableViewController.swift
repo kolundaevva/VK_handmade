@@ -25,6 +25,7 @@ class FriendsListTableViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        title = "Friends"
         let nib = UINib(nibName: "FriendTableViewCell", bundle: nil)
         tableView.register(nib, forCellReuseIdentifier: "Friend")
         

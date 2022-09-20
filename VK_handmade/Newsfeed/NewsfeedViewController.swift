@@ -29,6 +29,7 @@ class NewsfeedViewController: UIViewController, NewsfeedDisplayLogic {
     // MARK: Setup
     
     private func setup() {
+        title = "News"
         let viewController        = self
         let interactor            = NewsfeedInteractor()
         let presenter             = NewsfeedPresenter()
@@ -52,7 +53,7 @@ class NewsfeedViewController: UIViewController, NewsfeedDisplayLogic {
         super.viewDidLoad()
         setup()
         setupTableView()
-        view.backgroundColor = #colorLiteral(red: 0.1764705926, green: 0.4980392158, blue: 0.7568627596, alpha: 1)
+        view.backgroundColor = #colorLiteral(red: 0.4470588235, green: 0.4980392157, blue: 0.5607843137, alpha: 1)
         
         interactor?.makeRequest(request: Newsfeed.Model.Request.RequestType.getNewsFeed)
     }

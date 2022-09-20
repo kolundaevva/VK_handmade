@@ -19,6 +19,7 @@ class UserGroupsListTableViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        title = "Groups"
         let nib = UINib(nibName: "GroupTableViewCell", bundle: nil)
         tableView.register(nib, forCellReuseIdentifier: "Group")
         
