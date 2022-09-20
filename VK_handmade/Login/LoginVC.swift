@@ -37,7 +37,7 @@ class LoginVC: UIViewController {
         urlComponents.queryItems = [URLQueryItem(name: "client_id", value: "51404690"),
                               URLQueryItem(name: "display", value: "mobile"),
                               URLQueryItem(name: "redirect_uri", value: urlComponents.host! + "/blank.html"),
-                              URLQueryItem(name: "scope", value: "271446"),
+                              URLQueryItem(name: "scope", value: "336982"),
                               URLQueryItem(name: "response_type", value: "token"),
                               URLQueryItem(name: "v", value: "5.131")]
         
@@ -57,7 +57,7 @@ class LoginVC: UIViewController {
     private func login() {
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
         guard let controller = storyboard.instantiateViewController(withIdentifier: "BarController") as? UITabBarController else { return }
-        controller.transitioningDelegate = self
+        controller.modalPresentationStyle = .fullScreen
         
         present(controller, animated: true)
     }
@@ -119,36 +119,3 @@ extension LoginVC: WKNavigationDelegate {
         decisionHandler(.cancel)
     }
 }
-
-extension LoginVC : UIViewControllerTransitioningDelegate {
-    func animationController(forPresented presented: UIViewController, presenting: UIViewController, source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
-        return CardRotateTransition()
-    }
-}
-
-class CardRotateTransition: NSObject, UIViewControllerAnimatedTransitioning {
-    func transitionDuration(using transitionContext: UIViewControllerContextTransitioning?) -> TimeInterval {
-        return 1.0
-    }
-    
-    func animateTransition(using transitionContext: UIViewControllerContextTransitioning) {
-        guard let source = transitionContext.viewController(forKey: .from),
-        let destinationVC = transitionContext.viewController(forKey: .to) else {
-            return
-        }
-        
-        transitionContext.containerView.addSubview(destinationVC.view)
-        destinationVC.view.layer.anchorPoint = CGPoint(x: 1, y: 0)
-        destinationVC.view.frame = source.view.frame
-        destinationVC.view.transform = CGAffineTransform(rotationAngle: -CGFloat.pi / 2)
-        
-        UIView.animate(withDuration: 1.2, delay: 0, usingSpringWithDamping: 0.6, initialSpringVelocity: 0, options: [], animations: {
-            destinationVC.view.transform = CGAffineTransform(rotationAngle: 0)
-        }) { animationFinished in
-            if animationFinished && !transitionContext.transitionWasCancelled {
-                transitionContext.completeTransition(true)
-            }
-        }
-    }
-}
-
