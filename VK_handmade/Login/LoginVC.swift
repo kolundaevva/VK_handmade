@@ -14,8 +14,11 @@ class LoginVC: UIViewController {
     private var webView: WKWebView!
     private let dataManger: Manager = DataManager()
     
+    @IBOutlet var loginButton: UIButton!
+    
     override func loadView() {
         super.loadView()
+        loginButton.layer.cornerRadius = 10
         
         webView = WKWebView()
         webView.navigationDelegate = self
@@ -46,7 +49,16 @@ class LoginVC: UIViewController {
     
     @IBAction func loginPressed(_ sender: Any) {
         webView.isHidden = false
-        loadStartScreen()
+        let userToken = KeychainWrapper.standard.string(forKey: "userToken") ?? ""
+        let userId = KeychainWrapper.standard.string(forKey: "userId") ?? ""
+        
+        if !userToken.isEmpty && !userId.isEmpty {
+            ApiKey.session.token = userToken
+            ApiKey.session.userId = userId
+            login()
+        } else {
+            loadStartScreen()
+        }
     }
     
     @IBAction func unwindToLogin(segue: UIStoryboardSegue) {
@@ -98,22 +110,18 @@ extension LoginVC: WKNavigationDelegate {
             }
         
         if let token = params["access_token"] {
-            let userToken = KeychainWrapper.standard.string(forKey: "userToken")
             guard let realm = try? Realm(), let id = params["user_id"] else { return }
             
             ApiKey.session.token = token
             ApiKey.session.userId = id
             
-            if userToken == token {
-                login()
-            } else {
-                KeychainWrapper.standard.set(token, forKey: "userToken")
-                
-                if let _ = realm.object(ofType: User.self, forPrimaryKey: id) { } else {
-                    dataManger.saveUser(id: id)
-                }
-                login()
+            KeychainWrapper.standard.set(token, forKey: "userToken")
+            KeychainWrapper.standard.set(id, forKey: "userId")
+            
+            if let _ = realm.object(ofType: User.self, forPrimaryKey: id) { } else {
+                dataManger.saveUser(id: id)
             }
+            login()
         }
         
         decisionHandler(.cancel)

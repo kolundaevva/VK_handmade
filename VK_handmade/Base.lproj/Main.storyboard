@@ -38,6 +38,9 @@
                             <constraint firstItem="xNl-Xn-u8K" firstAttribute="centerX" secondItem="pGz-dc-PmZ" secondAttribute="centerX" id="mY2-SW-7p9"/>
                         </constraints>
                     </view>
+                    <connections>
+                        <outlet property="loginButton" destination="xNl-Xn-u8K" id="uT4-mF-i35"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="3uD-bn-CuZ" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
