@@ -12,7 +12,7 @@ class GroupTableViewCell: UITableViewCell {
     @IBOutlet weak var groupName: UILabel!
     @IBOutlet weak var groupImage: WebImageView!
     
-    func configure(with group: Group) {
+    func configure(with group: ProfileRepsentable) {
         groupName.text = group.name
         groupImage.set(url: group.photo)
     }

@@ -12,8 +12,8 @@ class FriendTableViewCell: UITableViewCell {
     @IBOutlet weak var friendName: UILabel!
     @IBOutlet weak var friendImage: WebImageView!
     
-    func configure(with friend: Friend) {
-        friendName.text = "\(friend.firstName) \(friend.lastName)"
+    func configure(with friend: ProfileRepsentable) {
+        friendName.text = friend.name
         friendImage.set(url: friend.photo)
     }
     

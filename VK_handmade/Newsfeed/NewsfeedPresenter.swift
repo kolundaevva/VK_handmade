@@ -15,7 +15,6 @@ protocol NewsfeedPresentationLogic {
 
 class NewsfeedPresenter: NewsfeedPresentationLogic {
     weak var viewController: NewsfeedDisplayLogic?
-    var dataManager: Manager?
     
     let cellLayoutCalculator: NewsfeedCellLayoutCalculatorProtocol = NewsfeedCellLayoutCalculator()
     private let dateFormatter: DateFormatter = {

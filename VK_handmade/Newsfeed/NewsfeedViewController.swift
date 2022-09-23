@@ -39,7 +39,6 @@ class NewsfeedViewController: UIViewController, NewsfeedDisplayLogic {
         interactor.presenter      = presenter
         interactor.dataManager    = dataManager
         presenter.viewController  = viewController
-        presenter.dataManager     = dataManager
         router.viewController     = viewController
     }
     
