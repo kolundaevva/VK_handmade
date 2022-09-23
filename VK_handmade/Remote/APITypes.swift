@@ -151,7 +151,7 @@ extension API {
                         let sourceId: Int
                         let postId: Int
                         let date: Double
-                        let type: String
+                        let type: String?
                         let text: String?
                         let attachments: [Attechment]?
                         let comments: CountableItem?
