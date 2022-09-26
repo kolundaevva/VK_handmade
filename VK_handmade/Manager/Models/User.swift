@@ -13,7 +13,7 @@ class User: Object {
     var friends = List<Friend>()
     var groups = List<Group>()
     var feeds = List<Feed>()
-    
+
     override class func primaryKey() -> String? {
         return "id"
     }

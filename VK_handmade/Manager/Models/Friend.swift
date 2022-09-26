@@ -17,14 +17,14 @@ class Friend: Object, ProfileRepsentable {
         return firstName + " " + lastName
     }
     var photos = List<Photo>()
-    
+
     override class func primaryKey() -> String? {
         "id"
     }
-    
+
     convenience init(user: API.Types.Response.VKUser.UserResponse.VKFriend) {
         self.init()
-        
+
         id = user.id
         photo = user.photo
         firstName = user.firstName

@@ -17,17 +17,15 @@ protocol SearchGroupDelegate: AnyObject {
 }
 
 class SearchGroupListViewController: UITableViewController, SearchGroupListDisplayLogic {
-    
     var interactor: SearchGroupListBusinessLogic?
     var router: (NSObjectProtocol & SearchGroupListRoutingLogic)?
-    
+
     var groupsViewModel = GroupViewModel.init(cells: [])
     private let dataManager: Manager = DataManager()
-    
+
     weak var delegate: SearchGroupDelegate?
 
     // MARK: Setup
-    
     private func setup() {
         let viewController        = self
         let interactor            = SearchGroupListInteractor()
@@ -39,57 +37,66 @@ class SearchGroupListViewController: UITableViewController, SearchGroupListDispl
         presenter.viewController  = viewController
         router.viewController     = viewController
     }
-    
+
     // MARK: View lifecycle
-    
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+
         setup()
         setupTableView()
     }
-    
+
     private func setupTableView() {
         tableView.delegate = self
         tableView.dataSource = self
         let cellNib = UINib(nibName: "GroupTableViewCell", bundle: nil)
         tableView.register(cellNib, forCellReuseIdentifier: "SearchGroup")
     }
-    
+
     func displayData(viewModel: SearchGroupList.Model.ViewModel.ViewModelData) {
         switch viewModel {
 //        case .displayGroupsList(groups: let groups):
 //            groupsViewModel = groups
 //            tableView.reloadData()
         case .showError(error: let error):
-            let ac = UIAlertController(title: "Something goes wrong", message: error.localizedDescription, preferredStyle: .alert)
-            ac.addAction(UIAlertAction(title: "OK", style: .default))
-            self.present(ac, animated: true)
+            let alert = UIAlertController(
+                title: "Something goes wrong",
+                message: error.localizedDescription,
+                preferredStyle: .alert
+            )
+            alert.addAction(UIAlertAction(title: "OK", style: .default))
+            self.present(alert, animated: true)
         }
     }
-    
+
 }
 
 extension SearchGroupListViewController {
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return groupsViewModel.cells.count
     }
-    
+
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "SearchGroup", for: indexPath) as! GroupTableViewCell
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: "SearchGroup",
+                                                       for: indexPath)
+                as? GroupTableViewCell else { return UITableViewCell() }
         let group = groupsViewModel.cells[indexPath.row]
         cell.configure(with: group)
         return cell
     }
-    
+
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let selectedGroup = groupsViewModel.cells[indexPath.row]
-        
-        let ac = UIAlertController(title: "Groups", message: "Do you want to follow \(selectedGroup.name)", preferredStyle: .alert)
+
+        let alert = UIAlertController(title: "Groups",
+                                      message: "Do you want to follow \(selectedGroup.name)",
+                                      preferredStyle: .alert
+        )
         let follow = UIAlertAction(title: "Follow", style: .default) { [weak self] _ in
-            API.Client.shared.get(.joinGroup(id: selectedGroup.id)) { (result: Result<API.Types.Response.Empty, API.Types.Error>) in
+            API.Client.shared.get(
+                .joinGroup(id: selectedGroup.id)) { (result: Result<API.Types.Response.Empty, API.Types.Error>) in
                 switch result {
-                case .success(_):
+                case .success:
                     self?.delegate?.makeRequest()
                 case .failure(let failure):
                     self?.displayData(viewModel: .showError(error: failure))
@@ -98,10 +105,10 @@ extension SearchGroupListViewController {
             self?.groupsViewModel.cells.remove(at: indexPath.row)
             self?.tableView.reloadData()
         }
-        
+
         let cancel = UIAlertAction(title: "Cancel", style: .default)
-        ac.addAction(follow)
-        ac.addAction(cancel)
-        present(ac, animated: true)
+        alert.addAction(follow)
+        alert.addAction(cancel)
+        present(alert, animated: true)
     }
 }

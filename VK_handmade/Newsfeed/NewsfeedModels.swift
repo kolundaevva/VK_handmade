@@ -9,7 +9,7 @@
 import UIKit
 
 enum Newsfeed {
-    
+
     enum Model {
         struct Request {
             enum RequestType {
@@ -30,7 +30,7 @@ enum Newsfeed {
             }
         }
     }
-    
+
 }
 
 struct FeedViewModel {
@@ -46,12 +46,12 @@ struct FeedViewModel {
         var attechments: [FeedCellAttechmentViewModel]
         var sizes: FeedCellSizes
     }
-    
+
     struct FeedCellPhotoAttechment: FeedCellAttechmentViewModel {
         var photoUrlString: String
         var height: Int
         var width: Int
     }
-    
+
     var cells: [Cell]
 }

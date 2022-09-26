@@ -7,5 +7,6 @@ target 'VK_handmade' do
 
   # Pods for VK_handmade
   pod 'RealmSwift'
+  pod 'SwiftLint'
 
 end

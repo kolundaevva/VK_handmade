@@ -15,7 +15,6 @@ protocol SearchGroupListRoutingLogic {
 class SearchGroupListRouter: NSObject, SearchGroupListRoutingLogic {
 
   weak var viewController: SearchGroupListViewController?
-  
   // MARK: Routing
-  
+
 }

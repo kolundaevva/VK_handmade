@@ -13,9 +13,9 @@ protocol NewsfeedDisplayLogic: AnyObject {
 }
 
 class NewsfeedViewController: UIViewController, NewsfeedDisplayLogic {
-    
+
     @IBOutlet weak var tableView: UITableView!
-    
+
     var interactor: NewsfeedBusinessLogic?
     var router: (NSObjectProtocol & NewsfeedRoutingLogic)?
     private let dataManager: Manager = DataManager()
@@ -25,9 +25,8 @@ class NewsfeedViewController: UIViewController, NewsfeedDisplayLogic {
         refresh.addTarget(self, action: #selector(updateFeed), for: .valueChanged)
         return refresh
     }()
-    
+
     // MARK: Setup
-    
     private func setup() {
         title = "News"
         let viewController        = self
@@ -41,32 +40,27 @@ class NewsfeedViewController: UIViewController, NewsfeedDisplayLogic {
         presenter.viewController  = viewController
         router.viewController     = viewController
     }
-    
-    // MARK: Routing
-    
-    
-    
+
     // MARK: View lifecycle
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         setup()
         setupTableView()
         view.backgroundColor = #colorLiteral(red: 0.4470588235, green: 0.4980392157, blue: 0.5607843137, alpha: 1)
-        
+
         interactor?.makeRequest(request: Newsfeed.Model.Request.RequestType.getNewsFeed)
     }
-    
+
     private func setupTableView() {
         //        let nib = UINib(nibName: "NewsfeedCell", bundle: nil)
         //        tableView.register(nib, forCellReuseIdentifier: "Post")
         tableView.register(NewsfeedCellCode.self, forCellReuseIdentifier: "Post")
-        
+
         tableView.separatorStyle = .none
         tableView.backgroundColor = .clear
         tableView.addSubview(refreshControl)
     }
-    
+
     func displayData(viewModel: Newsfeed.Model.ViewModel.ViewModelData) {
         switch viewModel {
         case .displayNewsFeed(feed: let feed):
@@ -74,37 +68,44 @@ class NewsfeedViewController: UIViewController, NewsfeedDisplayLogic {
             self.tableView.reloadData()
             refreshControl.endRefreshing()
         case .showError(error: let error):
-            let ac = UIAlertController(title: "Something goes wrong", message: error.localizedDescription, preferredStyle: .alert)
-            ac.addAction(UIAlertAction(title: "OK", style: .default))
-            self.present(ac, animated: true)
+            let alert = UIAlertController(
+                title: "Something goes wrong",
+                message: error.localizedDescription,
+                preferredStyle: .alert
+            )
+            alert.addAction(UIAlertAction(title: "OK", style: .default))
+            self.present(alert, animated: true)
         }
     }
-    
+
     @objc private func updateFeed() {
         interactor?.makeRequest(request: Newsfeed.Model.Request.RequestType.getNewsFeed)
     }
 }
 
 extension NewsfeedViewController: UITableViewDelegate, UITableViewDataSource {
-    
+
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return feedViewModel.cells.count
     }
-    
+
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 //        let cell = tableView.dequeueReusableCell(withIdentifier: "Post", for: indexPath) as! NewsfeedCell
-        let cell = tableView.dequeueReusableCell(withIdentifier: "Post", for: indexPath) as! NewsfeedCellCode
+        guard let cell = tableView.dequeueReusableCell(
+            withIdentifier: "Post",
+            for: indexPath
+        ) as? NewsfeedCellCode else { return UITableViewCell() }
         let feed = feedViewModel.cells[indexPath.row]
         cell.configure(with: feed)
         cell.delegate = self
-        
+
         return cell
     }
-    
+
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return feedViewModel.cells[indexPath.row].sizes.totalHeight
     }
-    
+
     func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
         return feedViewModel.cells[indexPath.row].sizes.totalHeight
     }

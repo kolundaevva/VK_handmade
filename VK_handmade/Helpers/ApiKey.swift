@@ -9,9 +9,9 @@ import Foundation
 
 class ApiKey {
     static let session = ApiKey()
-    
+
     var token = ""
     var userId = ""
-    
+
     private init() {}
 }

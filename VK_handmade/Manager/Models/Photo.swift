@@ -12,19 +12,19 @@ class Photo: Object {
     @objc dynamic var id = 0
     @objc dynamic var url = ""
     dynamic var sizes = List<Size>()
-    
+
     var height: Int {
         return getPropperSize().height
     }
-    
+
     var width: Int {
         return getPropperSize().width
     }
-    
+
     var srcBIG: String {
         return getPropperSize().url
     }
-    
+
     private func getPropperSize() -> Size {
         if let sizeX = sizes.first(where: { $0.type == "x" }) {
             return sizeX
@@ -34,10 +34,10 @@ class Photo: Object {
             return Size(height: 0, width: 0, url: "", type: "wrong image")
         }
     }
-    
+
     convenience init(photo: API.Types.Response.VKPhoto.Res.Item) {
         self.init()
-        
+
         id = photo.id
         guard let photoURL = photo.sizes.first?.url else {
             self.url = ""
@@ -56,10 +56,10 @@ class Size: Object {
     @objc dynamic var width: Int = 0
     @objc dynamic var url: String = ""
     @objc dynamic var type: String = ""
-    
+
     convenience init(height: Int, width: Int, url: String, type: String) {
         self.init()
-        
+
         self.height = height
         self.width = width
         self.url = url

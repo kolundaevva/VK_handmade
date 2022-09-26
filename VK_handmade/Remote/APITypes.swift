@@ -16,36 +16,36 @@ protocol ProfileRepsentable {
 extension API {
     enum Types {
         enum Response {
-            //MARK: - Models
-            
-            //VK User model
+            // MARK: - Models
+
+            // VK User model
             class VKUser: Codable {
                 let response: UserResponse
-                
+
                 init(response: UserResponse) {
                     self.response = response
                 }
-                
+
                 class UserResponse: Codable {
                     let items: [VKFriend]
-                    
+
                     init(items: [VKFriend]) {
                         self.items = items
                     }
-                    
+
                     class VKFriend: Codable, ProfileRepsentable {
                         let id: Int
                         let photo: String
                         let firstName, lastName: String
                         var name: String { firstName + " " + lastName }
-                        
+
                         enum CodingKeys: String, CodingKey {
                             case id
                             case photo = "photo_50"
                             case firstName = "first_name"
                             case lastName = "last_name"
                         }
-                        
+
                         init(id: Int, photo: String, firstName: String, lastName: String) {
                             self.id = id
                             self.photo = photo
@@ -55,19 +55,19 @@ extension API {
                     }
                 }
             }
-            
-            //VK Group model
+
+            // VK Group model
             class VKGroupData: Codable {
                 let response: GroupResponse
-                
+
                 class GroupResponse: Codable {
                     let items: [VKGroup]
-                    
+
                     class VKGroup: Codable, ProfileRepsentable {
                         let id: Int
                         let name: String
                         let photo: String
-                        
+
                         enum CodingKeys: String, CodingKey {
                             case id, name
                             case photo = "photo_50"
@@ -75,34 +75,34 @@ extension API {
                     }
                 }
             }
-            
-            //VK Photo model
+
+            // VK Photo model
             class VKPhoto: Codable {
                 let response: Res
-                
+
                 class Res: Codable {
                     let items: [Item]
 
                     init(items: [Item]) {
                         self.items = items
                     }
-                    
+
                     class Item: Codable {
                         let id, ownerID: Int
                         let sizes: [Size]
-                        
+
                         var height: Int {
                             return getPropperSize().height
                         }
-                        
+
                         var width: Int {
                             return getPropperSize().width
                         }
-                        
+
                         var srcBIG: String {
                             return getPropperSize().url
                         }
-                        
+
                         private func getPropperSize() -> Size {
                             if let sizeX = sizes.first(where: { $0.type == "x" }) {
                                 return sizeX
@@ -112,19 +112,19 @@ extension API {
                                 return Size(height: 0, width: 0, url: "", type: "wrong image")
                             }
                         }
-                        
+
                         enum CodingKeys: String, CodingKey {
                             case id
                             case ownerID = "owner_id"
                             case sizes
                         }
-                        
+
                         class Size: Codable {
                             let height: Int
                             let width: Int
                             let url: String
                             let type: String
-                            
+
                             init(height: Int, width: Int, url: String, type: String) {
                                 self.height = height
                                 self.width = width
@@ -135,18 +135,18 @@ extension API {
                     }
                 }
             }
-            
-            //VK Post Model
-            
+
+            // VK Post Model
+
             class VKPostData: Codable {
                 let response: FeedResponse
-                
+
                 class FeedResponse: Codable {
                     let items: [VKPost]
                     let groups: [VKGroupData.GroupResponse.VKGroup]
                     let profiles: [VKUser.UserResponse.VKFriend]
                     let nextFrom: String?
-                    
+
                     class VKPost: Codable {
                         let sourceId: Int
                         let postId: Int
@@ -157,15 +157,15 @@ extension API {
                         let comments: CountableItem?
                         let likes: CountableItem?
                         let views: CountableItem?
-                        
+
                         class Attechment: Codable {
                             let photo: VKPhoto.Res.Item?
                         }
-                        
+
                         class CountableItem: Codable {
                             let count: Int
                         }
-                        
+
                         enum CodingKeys: String, CodingKey {
                             case sourceId = "source_id"
                             case postId = "post_id"
@@ -173,22 +173,22 @@ extension API {
                             case date, text, attachments
                             case comments, likes, views
                         }
-                        
+
                     }
                 }
             }
-            
+
             class Empty: Decodable { }
         }
-        
+
         enum Request {
             struct Empty: Encodable {}
         }
-        
+
         enum Error: LocalizedError {
             case generic(reason: String)
             case `iternal`(reason: String)
-            
+
             var errorDescription: String? {
                 switch self {
                 case .generic(reason: let reason):
@@ -198,7 +198,7 @@ extension API {
                 }
             }
         }
-        
+
         enum Endpoint {
             case getFriendsList
             case getUserPhotos(id: String)
@@ -206,14 +206,14 @@ extension API {
             case searchGroups(name: String)
             case joinGroup(id: Int)
             case getNewsFeed
-            
+
             var url: URL {
                 let userID = ApiKey.session.userId
                 let token = ApiKey.session.token
                 var urlConstructor = URLComponents()
                 urlConstructor.scheme = "https"
                 urlConstructor.host = "api.vk.com"
-                
+
                 switch self {
                 case .getFriendsList:
                     urlConstructor.path = "/method/friends.get"
@@ -260,11 +260,11 @@ extension API {
                         URLQueryItem(name: "v", value: "5.131")
                     ]
                 }
-                
+
                 return urlConstructor.url!
             }
         }
-        
+
         enum Method: String {
             case get
         }
