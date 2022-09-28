@@ -16,7 +16,6 @@ class FriendsListViewController: UITableViewController, FriendsListDisplayLogic 
     var interactor: FriendsListBusinessLogic?
     var router: (NSObjectProtocol & FriendsListRoutingLogic)?
 
-    private let dataManager: Manager = DataManager()
     var friendsViewModel = FriendViewModel.init(cells: [])
     // MARK: Setup
 
@@ -28,7 +27,6 @@ class FriendsListViewController: UITableViewController, FriendsListDisplayLogic 
         viewController.interactor = interactor
         viewController.router     = router
         interactor.presenter      = presenter
-        interactor.dataManager    = dataManager
         presenter.viewController  = viewController
         router.viewController     = viewController
     }
@@ -47,7 +45,8 @@ class FriendsListViewController: UITableViewController, FriendsListDisplayLogic 
             action: #selector(logut)
         )
 
-        interactor?.makeRequest(request: FriendsList.Model.Request.RequestType.getFriendsList)
+        interactor?.makeRequest(request: .getCachedFriends)
+        interactor?.makeRequest(request: .getFriendsList)
     }
 
     private func setupTableView() {

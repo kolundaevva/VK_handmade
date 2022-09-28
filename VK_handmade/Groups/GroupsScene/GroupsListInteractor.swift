@@ -15,7 +15,6 @@ protocol GroupsListBusinessLogic {
 class GroupsListInteractor: GroupsListBusinessLogic {
     var presenter: GroupsListPresentationLogic?
     var service: GroupsListService?
-    var dataManager: Manager?
 
     func makeRequest(request: GroupsList.Model.Request.RequestType) {
         if service == nil {
@@ -24,19 +23,26 @@ class GroupsListInteractor: GroupsListBusinessLogic {
 
         switch request {
         case .getGroupsList:
-            API.Client.shared.get(
+            API.NetworkRequestManagerImpl.shared.get(
                 .getUserGroupsList
             ) { [weak self] (result: Result<API.Types.Response.VKGroupData, API.Types.Error>) in
                 switch result {
                 case .success(let success):
-                    let grp = success.response.items
-                    self?.dataManager?.saveUserGroupsData(grp)
+                    guard let groups = self?.dataConvertor(data: success.response.items) else { return }
+                    UserManagerImpl.session?.saveUserGroupsData(groups)
                     self?.presenter?.presentData(response: .presentGroupsList)
 
                 case .failure(let failure):
                     self?.presenter?.presentData(response: .presentError(error: failure))
                 }
             }
+
+        case .getCachedGroups:
+            presenter?.presentData(response: .presentGroupsList)
         }
+    }
+
+    private func dataConvertor(data: [API.Types.Response.VKGroupData.GroupResponse.VKGroup]) -> [Group] {
+        return data.map { Group(group: $0) }
     }
 }

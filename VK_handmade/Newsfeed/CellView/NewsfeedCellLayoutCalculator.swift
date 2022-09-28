@@ -10,14 +10,14 @@ import UIKit
 
 private struct Sizes: FeedCellSizes {
     var postLabelFrame: CGRect
-    var attechmentFrame: CGRect
+    var attachmentFrame: CGRect
     var bottomViewFrame: CGRect
     var moreTextButtonFrame: CGRect
     var totalHeight: CGFloat
 }
 
 protocol NewsfeedCellLayoutCalculatorProtocol {
-    func sizes(postText: String?, attechments: [FeedCellAttechmentViewModel], isFullSize: Bool) -> FeedCellSizes
+    func sizes(postText: String?, attachments: [FeedCellAttachmentViewModel], isFullSize: Bool) -> FeedCellSizes
 }
 
 final class NewsfeedCellLayoutCalculator: NewsfeedCellLayoutCalculatorProtocol {
@@ -30,7 +30,7 @@ final class NewsfeedCellLayoutCalculator: NewsfeedCellLayoutCalculatorProtocol {
 
     func sizes(
         postText: String?,
-        attechments: [FeedCellAttechmentViewModel],
+        attachments: [FeedCellAttachmentViewModel],
         isFullSize: Bool
     ) -> FeedCellSizes {
         let feedWidth = screenWidth - Constans.feedInsets.left - Constans.feedInsets.right
@@ -74,18 +74,18 @@ final class NewsfeedCellLayoutCalculator: NewsfeedCellLayoutCalculatorProtocol {
 
         var postImageFrame = CGRect(origin: CGPoint(x: 0, y: postImageTop), size: CGSize.zero)
 
-        if let attechment = attechments.first {
-            let photoHeight = Float(attechment.height)
-            let photoWidth = Float(attechment.width)
+        if let attachment = attachments.first {
+            let photoHeight = Float(attachment.height)
+            let photoWidth = Float(attachment.width)
             let ration = CGFloat(photoHeight / photoWidth)
 
-            if attechments.count == 1 {
+            if attachments.count == 1 {
                 postImageFrame.size = CGSize(width: feedWidth, height: feedWidth * ration)
-            } else if attechments.count > 1 {
+            } else if attachments.count > 1 {
                 var photoSizes = [CGSize]()
 
-                for attechment in attechments {
-                    let size = CGSize(width: attechment.width, height: attechment.height)
+                for attachment in attachments {
+                    let size = CGSize(width: attachment.width, height: attachment.height)
                     photoSizes.append(size)
                 }
 
@@ -111,7 +111,7 @@ final class NewsfeedCellLayoutCalculator: NewsfeedCellLayoutCalculatorProtocol {
         let totalHeight = bottomViewFrame.maxY + Constans.feedInsets.bottom
 
         return Sizes(postLabelFrame: postLabelFrame,
-                     attechmentFrame: postImageFrame,
+                     attachmentFrame: postImageFrame,
                      bottomViewFrame: bottomViewFrame,
                      moreTextButtonFrame: moreTextButtonFrame,
                      totalHeight: totalHeight)

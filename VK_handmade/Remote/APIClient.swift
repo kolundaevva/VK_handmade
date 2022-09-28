@@ -7,16 +7,31 @@
 
 import UIKit
 
+protocol NetworkRequestManager {
+    func fetch<Request, Response>(_ endpoint: API.Types.Endpoint,
+                                  method: API.Types.Method,
+                                  body: Request?,
+                                  then callback: (
+                                    (Result<Response, API.Types.Error>
+                                    ) -> Void)?) where Request: Encodable, Response: Decodable
+
+    func get<Response>(_ endpoint: API.Types.Endpoint,
+                       callback: ((Result<Response, API.Types.Error>) -> Void)?
+    ) where Response: Decodable
+}
+
 extension API {
-    class Client {
-        static let shared = Client()
+    class NetworkRequestManagerImpl: NetworkRequestManager {
+        static let shared = NetworkRequestManagerImpl()
         private let encoder = JSONEncoder()
         private let decoder = JSONDecoder()
 
         func fetch<Request, Response>(_ endpoint: Types.Endpoint,
                                       method: Types.Method = .get,
                                       body: Request? = nil,
-                                      then callback: ((Result<Response, Types.Error>) -> Void)? = nil) where Request: Encodable, Response: Decodable {
+                                      then callback: (
+                                        (Result<Response, Types.Error>
+                                        ) -> Void)? = nil) where Request: Encodable, Response: Decodable {
             var urlRequest = URLRequest(url: endpoint.url)
             urlRequest.httpMethod = method.rawValue
 
@@ -35,7 +50,6 @@ extension API {
                     callback?(.failure(.generic(reason: "Could not fetch data: \(error.localizedDescription)")))
                 } else {
                     if let data = data {
-                        DispatchQueue.global().async {
                             do {
                                 let result = try self.decoder.decode(Response.self, from: data)
                                 DispatchQueue.main.async {
@@ -44,10 +58,13 @@ extension API {
                             } catch {
                                 print("Decoding error: \(error)")
                                 DispatchQueue.main.async {
-                                    callback?(.failure(.generic(reason: "Could not decode data: \(error.localizedDescription)")))
+                                    callback?(
+                                        .failure(
+                                            .generic(reason: "Could not decode data: \(error.localizedDescription)")
+                                        )
+                                    )
                                 }
                             }
-                        }
                     }
                 }
             }.resume()

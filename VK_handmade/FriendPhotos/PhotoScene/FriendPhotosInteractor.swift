@@ -16,7 +16,6 @@ class FriendPhotosInteractor: FriendPhotosBusinessLogic {
 
     var presenter: FriendPhotosPresentationLogic?
     var service: FriendPhotosService?
-    var dataManager: Manager?
 
     func makeRequest(request: FriendPhotos.Model.Request.RequestType) {
         if service == nil {
@@ -27,20 +26,26 @@ class FriendPhotosInteractor: FriendPhotosBusinessLogic {
         case .getFriendPhotos(id: let id):
             let stringId = String(id)
 
-            API.Client.shared.get(
+            API.NetworkRequestManagerImpl.shared.get(
                 .getUserPhotos(id: stringId)
             ) { [weak self] (result: Result<API.Types.Response.VKPhoto, API.Types.Error>) in
                 switch result {
                 case .success(let success):
-                    let phts = success.response.items
-                    self?.dataManager?.saveUserPhotosData(phts, id: id)
+                    guard let photos = self?.dataConvertor(data: success.response.items) else { return }
+                    UserManagerImpl.session?.saveUserPhotosData(photos, id: id)
                     self?.presenter?.presentData(response: .presentFriendPhotos(id: id))
 
                 case .failure(let failure):
                     self?.presenter?.presentData(response: .presentError(error: failure))
                 }
             }
+
+        case .getCachedPhotos(id: let id):
+            presenter?.presentData(response: .presentFriendPhotos(id: id))
         }
     }
 
+    private func dataConvertor(data: [API.Types.Response.VKPhoto.Res.Item]) -> [Photo] {
+        return data.map { Photo(photo: $0) }
+    }
 }

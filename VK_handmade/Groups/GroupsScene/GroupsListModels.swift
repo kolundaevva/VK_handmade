@@ -13,6 +13,7 @@ enum GroupsList {
         struct Request {
             enum RequestType {
                 case getGroupsList
+                case getCachedGroups
             }
         }
         struct Response {

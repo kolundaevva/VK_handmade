@@ -18,7 +18,6 @@ class GroupsListViewController: UITableViewController, GroupsListDisplayLogic {
 
     private let searchController = UISearchController(searchResultsController: SearchGroupListViewController())
 
-    private let dataManager: Manager = DataManager()
     var groupsViewModel = GroupViewModel.init(cells: [])
 
     // MARK: Setup
@@ -30,7 +29,6 @@ class GroupsListViewController: UITableViewController, GroupsListDisplayLogic {
         viewController.interactor = interactor
         viewController.router     = router
         interactor.presenter      = presenter
-        interactor.dataManager    = dataManager
         presenter.viewController  = viewController
         router.viewController     = viewController
     }
@@ -46,6 +44,7 @@ class GroupsListViewController: UITableViewController, GroupsListDisplayLogic {
         searchController.searchResultsUpdater = self
         navigationItem.searchController = searchController
 
+        interactor?.makeRequest(request: .getCachedGroups)
         interactor?.makeRequest(request: .getGroupsList)
     }
 
@@ -98,7 +97,7 @@ extension GroupsListViewController: UISearchResultsUpdating {
         let updateQueue = DispatchQueue(label: "com.kolundaev-update", qos: .utility, attributes: .concurrent)
 
         if !trimmed.isEmpty {
-            API.Client.shared.get(
+            API.NetworkRequestManagerImpl.shared.get(
                 .searchGroups(name: trimmed)
             ) { (result: Result<API.Types.Response.VKGroupData, API.Types.Error>) in
                 switch result {

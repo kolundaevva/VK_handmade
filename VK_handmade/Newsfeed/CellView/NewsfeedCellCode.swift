@@ -300,14 +300,14 @@ final class NewsfeedCellCode: UITableViewCell {
         bottomView.frame = feed.sizes.bottomViewFrame
         moreTextButton.frame = feed.sizes.moreTextButtonFrame
 
-        if let photoAttechment = feed.attechments.first, feed.attechments.count == 1 {
-            postImageView.frame = feed.sizes.attechmentFrame
+        if let photoAttechment = feed.attachments.first, feed.attachments.count == 1 {
+            postImageView.frame = feed.sizes.attachmentFrame
             postImageView.set(url: photoAttechment.photoUrlString)
             postImageView.isHidden = false
             galleryView.isHidden = true
-        } else if feed.attechments.count > 1 {
-            galleryView.frame = feed.sizes.attechmentFrame
-            galleryView.set(photos: feed.attechments)
+        } else if feed.attachments.count > 1 {
+            galleryView.frame = feed.sizes.attachmentFrame
+            galleryView.set(photos: feed.attachments)
             galleryView.isHidden = false
             postImageView.isHidden = true
         } else {

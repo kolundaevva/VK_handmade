@@ -21,7 +21,6 @@ class SearchGroupListViewController: UITableViewController, SearchGroupListDispl
     var router: (NSObjectProtocol & SearchGroupListRoutingLogic)?
 
     var groupsViewModel = GroupViewModel.init(cells: [])
-    private let dataManager: Manager = DataManager()
 
     weak var delegate: SearchGroupDelegate?
 
@@ -93,7 +92,7 @@ extension SearchGroupListViewController {
                                       preferredStyle: .alert
         )
         let follow = UIAlertAction(title: "Follow", style: .default) { [weak self] _ in
-            API.Client.shared.get(
+            API.NetworkRequestManagerImpl.shared.get(
                 .joinGroup(id: selectedGroup.id)) { (result: Result<API.Types.Response.Empty, API.Types.Error>) in
                 switch result {
                 case .success:

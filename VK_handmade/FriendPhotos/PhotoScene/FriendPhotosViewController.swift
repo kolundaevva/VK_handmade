@@ -17,7 +17,6 @@ class FriendPhotosViewController: UICollectionViewController, FriendPhotosDispla
     var router: (NSObjectProtocol & FriendPhotosRoutingLogic)?
 
     var id = 0
-    private let dataManager: Manager = DataManager()
     private var userPhotos = [Photo]()
 
     // MARK: Setup
@@ -29,7 +28,6 @@ class FriendPhotosViewController: UICollectionViewController, FriendPhotosDispla
         viewController.interactor = interactor
         viewController.router     = router
         interactor.presenter      = presenter
-        interactor.dataManager    = dataManager
         presenter.viewController  = viewController
         router.viewController     = viewController
     }
@@ -41,6 +39,8 @@ class FriendPhotosViewController: UICollectionViewController, FriendPhotosDispla
         title = "Friend's Photos"
         setup()
         setupCollectionView()
+
+        interactor?.makeRequest(request: .getCachedPhotos(id: id))
         interactor?.makeRequest(request: .getFriendPhotos(id: id))
     }
 

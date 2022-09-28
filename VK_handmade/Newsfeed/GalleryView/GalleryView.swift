@@ -10,7 +10,7 @@ import UIKit
 
 class GalleryView: UICollectionView, UICollectionViewDelegateFlowLayout {
 
-    private var photos: [FeedCellAttechmentViewModel] = []
+    private var photos: [FeedCellAttachmentViewModel] = []
 
     init() {
         let layout = RowLayout()
@@ -30,7 +30,7 @@ class GalleryView: UICollectionView, UICollectionViewDelegateFlowLayout {
         }
     }
 
-    func set(photos: [FeedCellAttechmentViewModel]) {
+    func set(photos: [FeedCellAttachmentViewModel]) {
         self.photos = photos
         contentOffset = CGPoint.zero
         reloadData()

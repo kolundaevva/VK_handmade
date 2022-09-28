@@ -208,7 +208,7 @@ extension API {
             case getNewsFeed
 
             var url: URL {
-                let userID = ApiKey.session.userId
+                let userID = String(ApiKey.session.userId)
                 let token = ApiKey.session.token
                 var urlConstructor = URLComponents()
                 urlConstructor.scheme = "https"

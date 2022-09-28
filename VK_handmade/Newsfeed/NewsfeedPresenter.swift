@@ -18,23 +18,21 @@ class NewsfeedPresenter: NewsfeedPresentationLogic {
 
     let cellLayoutCalculator: NewsfeedCellLayoutCalculatorProtocol = NewsfeedCellLayoutCalculator()
     private let dateFormatter: DateFormatter = {
-        let dt = DateFormatter()
-        dt.locale = Locale(identifier: "ru_RU")
-        dt.dateFormat = "d MMM 'в' HH:mm"
-        return dt
+        let dtFormatter = DateFormatter()
+        dtFormatter.locale = Locale(identifier: "ru_RU")
+        dtFormatter.dateFormat = "d MMM 'в' HH:mm"
+        return dtFormatter
     }()
 
     func presentData(response: Newsfeed.Model.Response.ResponseType) {
         switch response {
         case .presentNewsFeed(postIds: let postIds):
-            guard let realm = try? Realm(),
-                  let user = realm.object(ofType: User.self, forPrimaryKey: ApiKey.session.userId) else { return }
-            guard let response = user.feeds.first else { return }
-            let groups = realm.objects(Group.self)
-            let users = realm.objects(Friend.self)
+            guard let groups: [Group] = DataManagerImpl.session?.getAllData() else { return }
+            guard let users: [Friend] = DataManagerImpl.session?.getAllData() else { return }
+            guard let response = DataManagerImpl.session?.getNewsFeed() else { return }
 
             let cellsList = response.feed.map { feed -> FeedViewModel.Cell in
-                return self.cellViewModel(from: feed, profiles: Array(users), groups: Array(groups), postIds: postIds)
+                return self.cellViewModel(from: feed, profiles: users, groups: groups, postIds: postIds)
             }
 
             let cells = Array(cellsList)
@@ -53,13 +51,13 @@ class NewsfeedPresenter: NewsfeedPresentationLogic {
     ) -> FeedViewModel.Cell {
 
         let profile = self.profile(for: item.sourceId, profiles: profiles, groups: groups)
-        let photoAttechments = self.photoAttechments(feed: item)
+        let photoAttachments = self.photoAttachments(feed: item)
         let date = Date(timeIntervalSince1970: item.date)
         let dateTitle = dateFormatter.string(from: date)
         let isFullSize = postIds.contains(item.postId)
         let sizes = cellLayoutCalculator.sizes(
             postText: item.text,
-            attechments: photoAttechments,
+            attachments: photoAttachments,
             isFullSize: isFullSize
         )
 
@@ -71,7 +69,7 @@ class NewsfeedPresenter: NewsfeedPresentationLogic {
                                        likes: formattedCounter(item.likes),
                                        comments: formattedCounter(item.comments),
                                        views: formattedCounter(item.views),
-                                       attechments: photoAttechments,
+                                       attachments: photoAttachments,
                                        sizes: sizes)
     }
 
@@ -95,8 +93,7 @@ class NewsfeedPresenter: NewsfeedPresentationLogic {
         return profileRepsentable!
     }
 
-    private func photoAttechments(feed: FeedResponse) -> [FeedViewModel.FeedCellPhotoAttechment] {
-
+    private func photoAttachments(feed: FeedResponse) -> [FeedViewModel.FeedCellPhotoAttechment] {
         return feed.photos.map { photo in
             return FeedViewModel.FeedCellPhotoAttechment.init(
                 photoUrlString: photo.srcBIG,
@@ -105,4 +102,5 @@ class NewsfeedPresenter: NewsfeedPresentationLogic {
             )
         }
     }
+
 }

@@ -14,6 +14,7 @@ enum FriendPhotos {
         struct Request {
             enum RequestType {
                 case getFriendPhotos(id: Int)
+                case getCachedPhotos(id: Int)
             }
         }
         struct Response {

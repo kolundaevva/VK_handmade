@@ -19,9 +19,7 @@ class FriendPhotosPresenter: FriendPhotosPresentationLogic {
     func presentData(response: FriendPhotos.Model.Response.ResponseType) {
         switch response {
         case .presentFriendPhotos(id: let id):
-            guard let realm = try? Realm(),
-                  let user = realm.object(ofType: Friend.self, forPrimaryKey: id) else { return }
-            let photos = Array(user.photos)
+            guard let photos = DataManagerImpl.session?.getPhotos(by: id) else { return }
             viewController?.displayData(viewModel: .displayFriendPhotos(photos: photos))
 
         case .presentError(error: let error):

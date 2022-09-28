@@ -12,7 +12,6 @@ import RealmSwift
 class LoginVC: UIViewController {
 
     private var webView: WKWebView!
-    private let dataManger: Manager = DataManager()
 
     @IBOutlet private var loginButton: UIButton!
 
@@ -27,10 +26,6 @@ class LoginVC: UIViewController {
         webView.frame = view.frame
         webView.isHidden = true
     }
-
-//    override func viewDidLoad() {
-//        Realm.Configuration.defaultConfiguration = Realm.Configuration(deleteRealmIfMigrationNeeded: true)
-//    }
 
     private func loadStartScreen() {
         var urlComponents = URLComponents()
@@ -50,11 +45,11 @@ class LoginVC: UIViewController {
     @IBAction private func loginPressed(_ sender: Any) {
         webView.isHidden = false
         let userToken = KeychainWrapper.standard.string(forKey: "userToken") ?? ""
-        let userId = KeychainWrapper.standard.string(forKey: "userId") ?? ""
+        let userId = KeychainWrapper.standard.integer(forKey: "userId")
 
-        if !userToken.isEmpty && !userId.isEmpty {
+        if !userToken.isEmpty && userId != nil {
             ApiKey.session.token = userToken
-            ApiKey.session.userId = userId
+            ApiKey.session.userId = userId!
             login()
         } else {
             loadStartScreen()
@@ -115,7 +110,7 @@ extension LoginVC: WKNavigationDelegate {
             }
 
         if let token = params["access_token"] {
-            guard let realm = try? Realm(), let id = params["user_id"] else { return }
+            guard let realm = try? Realm(), let stringId = params["user_id"], let id = Int(stringId) else { return }
 
             ApiKey.session.token = token
             ApiKey.session.userId = id
@@ -124,7 +119,7 @@ extension LoginVC: WKNavigationDelegate {
             KeychainWrapper.standard.set(id, forKey: "userId")
 
             if  realm.object(ofType: User.self, forPrimaryKey: id) == nil {
-                dataManger.saveUser(id: id)
+                UserManagerImpl.session?.saveUser(id: id)
             }
             login()
         }

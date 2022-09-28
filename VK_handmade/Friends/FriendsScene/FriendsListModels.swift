@@ -13,6 +13,7 @@ enum FriendsList {
         struct Request {
             enum RequestType {
                 case getFriendsList
+                case getCachedFriends
             }
         }
         struct Response {

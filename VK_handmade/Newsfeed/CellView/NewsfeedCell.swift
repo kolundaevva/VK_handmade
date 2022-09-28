@@ -15,11 +15,11 @@ protocol FeedCellViewModel {
     var likes: String? { get }
     var comments: String? { get }
     var views: String? { get }
-    var attechments: [FeedCellAttechmentViewModel] { get }
+    var attachments: [FeedCellAttachmentViewModel] { get }
     var sizes: FeedCellSizes { get }
 }
 
-protocol FeedCellAttechmentViewModel {
+protocol FeedCellAttachmentViewModel {
     var photoUrlString: String { get }
     var height: Int { get }
     var width: Int { get }
@@ -27,7 +27,7 @@ protocol FeedCellAttechmentViewModel {
 
 protocol FeedCellSizes {
     var postLabelFrame: CGRect { get }
-    var attechmentFrame: CGRect { get }
+    var attachmentFrame: CGRect { get }
     var bottomViewFrame: CGRect { get }
     var moreTextButtonFrame: CGRect { get }
     var totalHeight: CGFloat { get }
@@ -80,11 +80,11 @@ class NewsfeedCell: UITableViewCell {
         viewsLabel.text = feed.views
 
         postLabel.frame = feed.sizes.postLabelFrame
-        postImageView.frame = feed.sizes.attechmentFrame
+        postImageView.frame = feed.sizes.attachmentFrame
         bottomView.frame = feed.sizes.bottomViewFrame
         moreTextButton.frame = feed.sizes.moreTextButtonFrame
 
-        if let photoAttechment = feed.attechments.first, feed.attechments.count == 1 {
+        if let photoAttechment = feed.attachments.first, feed.attachments.count == 1 {
             postImageView.set(url: photoAttechment.photoUrlString)
             postImageView.isHidden = false
         } else {

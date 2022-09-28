@@ -7,7 +7,6 @@
 //
 
 import UIKit
-import RealmSwift
 
 protocol GroupsListPresentationLogic {
     func presentData(response: GroupsList.Model.Response.ResponseType)
@@ -19,9 +18,7 @@ class GroupsListPresenter: GroupsListPresentationLogic {
     func presentData(response: GroupsList.Model.Response.ResponseType) {
         switch response {
         case .presentGroupsList:
-            guard let realm = try? Realm(),
-                  let user = realm.object(ofType: User.self, forPrimaryKey: ApiKey.session.userId) else { return }
-            let groups = user.groups
+            guard let groups = DataManagerImpl.session?.getGroups() else { return }
 
             let cellsList = groups.map { group in
                 self.cellViewModel(from: group)

@@ -8,23 +8,32 @@
 import Foundation
 import RealmSwift
 
-protocol Manager {
-    func saveUser(id: String)
-    func saveFriends(_ data: [API.Types.Response.VKUser.UserResponse.VKFriend])
-    func saveUserPhotosData(_ data: [API.Types.Response.VKPhoto.Res.Item], id: Int)
-    func saveUserGroupsData(_ data: [API.Types.Response.VKGroupData.GroupResponse.VKGroup])
-    func saveUserFeedData(_ data: API.Types.Response.VKPostData.FeedResponse)
+protocol UserManager {
+    func saveUser(id: Int)
+    func saveFriends(_ friends: [Friend])
+    func saveUserPhotosData(_ photos: [Photo], id: Int)
+    func saveUserGroupsData(_ groups: [Group])
+    func saveUserFeedData(_ feeds: Feed)
     func addGroup(_ group: Group)
 }
 
-class DataManager: Manager {
-    func saveUser(id: String) {
+class UserManagerImpl: UserManager {
+    private let realm: Realm
+    static let session = UserManagerImpl()
+
+    private init?() {
+        let configurator = Realm.Configuration(schemaVersion: 0, deleteRealmIfMigrationNeeded: true)
+        guard let realm = try? Realm(configuration: configurator) else { return nil }
+        self.realm = realm
+        print(realm.configuration.fileURL ?? "")
+    }
+
+    func saveUser(id: Int) {
         let user = User()
         user.id = id
 
         do {
-            let realm = try Realm()
-
+            //            let realm = try Realm()
             try realm.write {
                 realm.add(user)
             }
@@ -33,11 +42,10 @@ class DataManager: Manager {
         }
     }
 
-    func saveFriends(_ data: [API.Types.Response.VKUser.UserResponse.VKFriend]) {
+    func saveFriends(_ friends: [Friend]) {
         do {
-            let realm = try Realm()
+            //            let realm = try Realm()
             guard let user = realm.object(ofType: User.self, forPrimaryKey: ApiKey.session.userId) else { return }
-            let friends = data.map { Friend(user: $0) }
             let oldFriends = Array(user.friends)
 
             if friends != oldFriends {
@@ -71,12 +79,11 @@ class DataManager: Manager {
         }
     }
 
-    func saveUserPhotosData(_ data: [API.Types.Response.VKPhoto.Res.Item], id: Int) {
+    func saveUserPhotosData(_ photos: [Photo], id: Int) {
         do {
-            let realm = try Realm()
-//            let id = Int(ApiKey.session.userId) ?? 0
+            //            let realm = try Realm()
+            //            let id = Int(ApiKey.session.userId) ?? 0
             guard let user = realm.object(ofType: Friend.self, forPrimaryKey: id) else { return }
-            let photos = data.map { Photo(photo: $0) }
             let oldPhotos = user.photos
 
             try realm.write {
@@ -88,11 +95,11 @@ class DataManager: Manager {
         }
     }
 
-    func saveUserGroupsData(_ data: [API.Types.Response.VKGroupData.GroupResponse.VKGroup]) {
+    func saveUserGroupsData(_ groups: [Group]) {
         do {
             let realm = try Realm()
             guard let user = realm.object(ofType: User.self, forPrimaryKey: ApiKey.session.userId) else { return }
-            let groups = data.map { Group(group: $0) }
+
             let oldGourps = Array(user.groups)
             var uniqueNewGroups = [Group]()
             var uniqueOldGrops = [Group]()
@@ -126,11 +133,10 @@ class DataManager: Manager {
         }
     }
 
-    func saveUserFeedData(_ data: API.Types.Response.VKPostData.FeedResponse) {
+    func saveUserFeedData(_ feeds: Feed) {
         do {
-            let realm = try Realm()
+            //            let realm = try Realm()
             guard let user = realm.object(ofType: User.self, forPrimaryKey: ApiKey.session.userId) else { return }
-            let feeds = Feed(feedResponse: data)
             let oldFeeds = user.feeds
 
             if oldFeeds.first != feeds {
@@ -159,7 +165,7 @@ class DataManager: Manager {
 
     func addGroup(_ group: Group) {
         do {
-            let realm = try Realm()
+            //            let realm = try Realm()
             guard let user = realm.object(ofType: User.self, forPrimaryKey: ApiKey.session.userId) else { return }
 
             try realm.write {

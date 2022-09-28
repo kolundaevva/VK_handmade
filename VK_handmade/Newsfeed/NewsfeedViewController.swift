@@ -18,8 +18,9 @@ class NewsfeedViewController: UIViewController, NewsfeedDisplayLogic {
 
     var interactor: NewsfeedBusinessLogic?
     var router: (NSObjectProtocol & NewsfeedRoutingLogic)?
-    private let dataManager: Manager = DataManager()
+
     private var feedViewModel = FeedViewModel.init(cells: [])
+
     lazy private var refreshControl: UIRefreshControl = {
        let refresh = UIRefreshControl()
         refresh.addTarget(self, action: #selector(updateFeed), for: .valueChanged)
@@ -36,7 +37,6 @@ class NewsfeedViewController: UIViewController, NewsfeedDisplayLogic {
         viewController.interactor = interactor
         viewController.router     = router
         interactor.presenter      = presenter
-        interactor.dataManager    = dataManager
         presenter.viewController  = viewController
         router.viewController     = viewController
     }
@@ -48,12 +48,11 @@ class NewsfeedViewController: UIViewController, NewsfeedDisplayLogic {
         setupTableView()
         view.backgroundColor = #colorLiteral(red: 0.4470588235, green: 0.4980392157, blue: 0.5607843137, alpha: 1)
 
+        interactor?.makeRequest(request: .getCachedFeed)
         interactor?.makeRequest(request: Newsfeed.Model.Request.RequestType.getNewsFeed)
     }
 
     private func setupTableView() {
-        //        let nib = UINib(nibName: "NewsfeedCell", bundle: nil)
-        //        tableView.register(nib, forCellReuseIdentifier: "Post")
         tableView.register(NewsfeedCellCode.self, forCellReuseIdentifier: "Post")
 
         tableView.separatorStyle = .none
@@ -90,7 +89,6 @@ extension NewsfeedViewController: UITableViewDelegate, UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-//        let cell = tableView.dequeueReusableCell(withIdentifier: "Post", for: indexPath) as! NewsfeedCell
         guard let cell = tableView.dequeueReusableCell(
             withIdentifier: "Post",
             for: indexPath

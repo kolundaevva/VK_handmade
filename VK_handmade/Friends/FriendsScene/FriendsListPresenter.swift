@@ -8,6 +8,7 @@
 
 import UIKit
 import RealmSwift
+
 protocol FriendsListPresentationLogic {
     func presentData(response: FriendsList.Model.Response.ResponseType)
 }
@@ -18,12 +19,7 @@ class FriendsListPresenter: FriendsListPresentationLogic {
     func presentData(response: FriendsList.Model.Response.ResponseType) {
         switch response {
         case .presentFriendsList:
-            guard let realm = try? Realm(),
-                  let user = realm.object(
-                    ofType: User.self,
-                    forPrimaryKey: ApiKey.session.userId
-                  ) else { return }
-            let friends = user.friends
+            guard let friends = DataManagerImpl.session?.getFriends() else { return }
 
             let cellsList = friends.map { friend in
                 self.cellViewModel(from: friend)

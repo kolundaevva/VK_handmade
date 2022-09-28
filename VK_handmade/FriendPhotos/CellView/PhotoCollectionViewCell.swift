@@ -9,7 +9,7 @@ import UIKit
 
 class PhotoCollectionViewCell: UICollectionViewCell {
 
-    @IBOutlet weak var photoView: WebImageView!
+    @IBOutlet private weak var photoView: WebImageView!
 
     func configure(with photo: Photo) {
         photoView.set(url: photo.url)

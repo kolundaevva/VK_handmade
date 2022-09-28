@@ -11,7 +11,7 @@ class ApiKey {
     static let session = ApiKey()
 
     var token = ""
-    var userId = ""
+    var userId = 0
 
     private init() {}
 }
